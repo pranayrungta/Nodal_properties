@@ -1,4 +1,9 @@
-./.project
+.project
 
-.o
-.exe
+*.o
+*.exe
+*.txt
+*.eps
+*.png
+*.spt
+*.ini
