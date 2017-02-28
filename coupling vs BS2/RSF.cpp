@@ -1,4 +1,7 @@
 #include "./../Topology/common_base.cpp"
+
+#ifndef PARAMETERS ///for testing only
+#define PARAMETERS
 constexpr int positive_well = 1;
 constexpr int negative_well = -1;
 namespace parameter
@@ -19,4 +22,6 @@ namespace parameter
     constexpr double perturbRange_initial = 0;
     constexpr double perturbRange_final = 5;
 }
+#endif // PARAMETERS
+
 #include "source/RSF_Processor.cpp"
