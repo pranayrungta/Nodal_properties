@@ -24,4 +24,5 @@ namespace parameter
 }
 #endif // PARAMETERS
 
-#include "source/RSF_Processor.cpp"
+#include "randomly_chosen/RSF_Processor.cpp"
+//#include "btc_source/RSF_Processor.cpp"

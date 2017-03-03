@@ -24,5 +24,5 @@ namespace parameter
 }
 #endif // PARAMETERS
 
-#include "source/ring_Processor.cpp"
-
+#include "randomly_chosen/ring_Processor.cpp"
+//#include "btc_source/ring_Processor.cpp"

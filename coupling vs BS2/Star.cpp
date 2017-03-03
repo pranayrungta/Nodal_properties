@@ -24,4 +24,5 @@ namespace parameter
 }
 #endif // PARAMETERS
 
-#include "source/star_Processor.cpp"
+#include "randomly_chosen/star_Processor.cpp"
+//#include "btc_source/star_Processor.cpp"

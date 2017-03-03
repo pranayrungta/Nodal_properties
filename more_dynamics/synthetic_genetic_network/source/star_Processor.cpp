@@ -29,10 +29,10 @@ struct BS_count
 	double bslowest=0;
 	int count=0;
 };
-using rsf_results = map<int,map<double,BS_count>>;
+using star_results = map<int,map<double,BS_count>>;
 
 
-void write_to_file(const rsf_results& results)
+void write_to_file(const star_results& results)
 {using parameter::perturbCount;
 
 	for(auto& nv:results)
@@ -64,7 +64,7 @@ using parameter::datafile;
 	Dynamics analyser;
 
 	///-------processing------
-	rsf_results results;
+	star_results results;
     for(auto& dp : data)
 	{
 		auto& arg = dp.args;
