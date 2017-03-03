@@ -1,4 +1,4 @@
-filename = 'Star.txt'
+filename = 'RSF_k=2_ic=50.txt'
 outfilename = 'btc_'+filename
 
 data = eval( open(filename,'r').read() )

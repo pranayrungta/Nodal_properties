@@ -13,6 +13,7 @@
 //}
 ////-------------------------------------------------
 
+#include "./../../../read_data/read_data.cpp"
 
 struct local_Dynamics
 {
@@ -83,7 +84,7 @@ using real_dist = uniform_real_distribution<double>;
 ///function to check if all nodes are in same well
 double Dynamics::syncWell()
 {
-    double& first = x[0]-mid_well;
+    double first = x[0]-mid_well;
     for(int i=1; i<x.size(); i++)
         if( (x[i]-mid_well)*first<0 )
             return unsync;
