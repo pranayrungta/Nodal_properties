@@ -8,12 +8,12 @@ namespace parameter
 {
 	string datafile = "./../btc_Star.txt";
 
-    const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9} ;
-    constexpr int perturbCount=1;
+    const vector<double> cRange {1} ;
+    constexpr int perturbCount=50;
 
-    constexpr int repetitions =2 ;
+    constexpr int repetitions =1 ;
 
-    constexpr double transients = 3;
+    constexpr double transients = 100;
     constexpr double dt = 0.01;
 
     constexpr double initial_well= negative_well ;

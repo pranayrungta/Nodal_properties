@@ -38,16 +38,17 @@ class Dynamics :private Dynamics_base
 			x.resize(dp.nbr.size());
 			Dx.resize(dp.nbr.size());
 		}
-		auto perturbNodes = sample(0,dp.nbr.size(),perturbCount,-1);
-
 		double B_S_ = 0;
 		for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)
 		{
+			auto perturbNodes = sample(0,dp.nbr.size()-1,perturbCount,-1);
 			fnode_BS_initialize( perturbNodes );
 			for(double t=0; t<transients; t+=dt)
 				evolveNodes(c,dp.nbr);
 			if(syncWell()==parameter::initial_well)
 				B_S_++;
+			for(int i=0; i<x.size(); i++)
+				cout<<"node "<<i<<" : "<<x[i]<<endl;
 		}
 		B_S_ /= repetitions;
 		return B_S_ ;

@@ -1,4 +1,4 @@
-filename = 'RSF_k=2_ic=50.txt'
+filename = 'RSF_k=1_ic=100.txt'
 outfilename = 'btc_'+filename
 
 data = eval( open(filename,'r').read() )

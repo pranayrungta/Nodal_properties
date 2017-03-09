@@ -5,10 +5,10 @@
 int main()
 {
     vector<int> nRange{100};
-    vector<int> kRange{2};
-    int iniCond = 50;
+    vector<int> kRange{1};
+    int iniCond = 100;
 
-	ofstream f("RSF_k=2_ic=50.txt");
+	ofstream f("RSF_k=1_ic=100.txt");
 	f<<"[ "<<endl;
     for(auto n : nRange)
     for(auto k : kRange)
