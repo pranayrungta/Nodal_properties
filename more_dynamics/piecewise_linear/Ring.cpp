@@ -1,3 +1,6 @@
+#ifndef PARAMETERS
+#define PARAMETERS
+
 #include "./../../Topology/common_base.cpp"
 constexpr double positive_well = 1.65;
 constexpr double negative_well = -1.65;
@@ -19,4 +22,7 @@ namespace parameter
     constexpr double perturbRange_initial = 0;
     constexpr double perturbRange_final = 3;
 }
+
+#endif // PARAMETERS
+
 #include "source/ring_Processor.cpp"

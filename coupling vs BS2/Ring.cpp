@@ -1,6 +1,6 @@
 #include "./../Topology/common_base.cpp"
 
-#ifndef PARAMETERS ///for testing only
+#ifndef PARAMETERS
 #define PARAMETERS
 constexpr int positive_well = 1;
 constexpr int negative_well = -1;

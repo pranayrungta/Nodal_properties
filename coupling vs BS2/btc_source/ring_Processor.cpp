@@ -21,7 +21,7 @@ namespace parameter
     constexpr double perturbRange_initial = 0;
     constexpr double perturbRange_final = 5;
 }
-//#include "source/Processor.cpp"
+
 #endif // PARAMETERS
 
 #include "./../../read_data/read_data.cpp"
@@ -35,7 +35,31 @@ struct BS_count
 	int count=0;
 };
 using ring_results = map<int,map<int,map<double,BS_count>>>;
-void write_to_file(const ring_results& results);
+
+
+void write_to_file(const ring_results& results)
+{using parameter::perturbCount;
+
+	for(auto& nv:results)
+    for(auto& kv :nv.second)
+    {
+        ostringstream ssh;
+        ostringstream ssl;
+        ssh<<"Ring_n="<<nv.first<<"_k="<<kv.first<<"_h_pc="<<perturbCount;
+        ssl<<"Ring_n="<<nv.first<<"_k="<<kv.first<<"_l_pc="<<perturbCount;
+
+        ofstream fh(ssh.str()+".txt");
+        ofstream fl(ssl.str()+".txt");
+        fh<<"#coupling"<<"\t"<<"BShighest"<<endl;
+        fl<<"#coupling"<<"\t"<<"BSlowest"<<endl;
+
+        for(auto& cv: kv.second)
+        {
+            fh<<cv.first<<"\t"<<cv.second.bshighest<<endl;
+            fl<<cv.first<<"\t"<<cv.second.bslowest<<endl;
+        }
+    }
+}
 
 
 int main()
@@ -70,29 +94,4 @@ using parameter::datafile;
 		cv.second.bslowest/=cv.second.count;
 	}
 	write_to_file(results);
-}
-
-
-void write_to_file(const ring_results& results)
-{using parameter::perturbCount;
-
-	for(auto& nv:results)
-    for(auto& kv :nv.second)
-    {
-        ostringstream ssh;
-        ostringstream ssl;
-        ssh<<"Ring_n="<<nv.first<<"_k="<<kv.first<<"_h_pc="<<perturbCount;
-        ssl<<"Ring_n="<<nv.first<<"_k="<<kv.first<<"_l_pc="<<perturbCount;
-
-        ofstream fh(ssh.str()+".txt");
-        ofstream fl(ssl.str()+".txt");
-        fh<<"#coupling"<<"\t"<<"BShighest"<<endl;
-        fl<<"#coupling"<<"\t"<<"BSlowest"<<endl;
-
-        for(auto& cv: kv.second)
-        {
-            fh<<cv.first<<"\t"<<cv.second.bshighest<<endl;
-            fl<<cv.first<<"\t"<<cv.second.bslowest<<endl;
-        }
-    }
 }

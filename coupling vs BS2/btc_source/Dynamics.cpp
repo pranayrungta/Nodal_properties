@@ -18,7 +18,6 @@ namespace parameter
     constexpr double perturbRange_final = 5;
 }
 #include "./../../read_data/read_data.cpp"
-//-------------------------------------------------
 
 #endif // PARAMETERS
 

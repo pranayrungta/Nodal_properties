@@ -21,7 +21,7 @@ namespace parameter
     constexpr double perturbRange_initial = 0;
     constexpr double perturbRange_final = 5;
 }
-//#include "source/Processor.cpp"
+
 #endif // PARAMETERS
 
 #include "./../../read_data/read_data.cpp"
@@ -95,4 +95,3 @@ using parameter::datafile;
 	}
 	write_to_file(results);
 }
-

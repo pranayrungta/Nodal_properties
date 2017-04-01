@@ -18,7 +18,6 @@ namespace parameter
     constexpr double perturbRange_final = 5;
 }
 #include "./../../read_data/read_data.cpp"
-//-------------------------------------------------
 
 #endif // PARAMETERS
 
@@ -47,12 +46,10 @@ class Dynamics :private Dynamics_base
 				evolveNodes(c,dp.nbr);
 			if(syncWell()==parameter::initial_well)
 				B_S_++;
-			for(int i=0; i<x.size(); i++)
-				cout<<"node "<<i<<" : "<<x[i]<<endl;
+//			for(int i=0; i<x.size(); i++)
+//				cout<<"node "<<i<<" : "<<x[i]<<endl;
 		}
 		B_S_ /= repetitions;
 		return B_S_ ;
 	}
 };
-
-

@@ -1,26 +1,27 @@
-//#include "./../../Topology/common_base.cpp"
-//constexpr int positive_well = 1;
-//constexpr int negative_well = -1;
-//namespace parameter
-//{
-//	string datafile = "./../btc_Star.txt";
-//
-//    const vector<double> cRange {0} ;
-//    constexpr int perturbCount=1;
-//
-//    constexpr double transients = 10;
-//    constexpr double dt = 0.01;
-//
-//    constexpr int initial_well= negative_well ;
-//    constexpr double spread= 0.25 ;
-//    constexpr double perturbRange_initial = 0;
-//    constexpr double perturbRange_final = 5;
-//}
-//#include "source/Processor.cpp"
+#ifndef PARAMETERS
+#define PARAMETERS
 
+#include "./../../Topology/common_base.cpp"
+constexpr int positive_well = 1;
+constexpr int negative_well = -1;
+namespace parameter
+{
+	string datafile = "btc_Star.txt";
 
-#include "./../../read_data/read_data.cpp"
-#include "./../../Dynamics_base.cpp"
+    const vector<double> cRange {1} ;
+    constexpr int perturbCount=90;
+
+    constexpr double transients = 10;
+    constexpr double dt = 0.01;
+
+    constexpr int initial_well= negative_well ;
+    constexpr double spread= 0.25 ;
+    constexpr double perturbRange_initial = 0;
+    constexpr double perturbRange_final = 5;
+}
+
+#endif
+
 #include "spacetime.cpp"
 #include<sstream>
 
@@ -41,18 +42,18 @@ using parameter::perturbCount;
 		{
 			ostringstream ssh;
 			ostringstream ssl;
-			ssh<<"Star_n="<<arg.at("n")<<"_h_pc="<<perturbCount;
-			ssl<<"Star_n="<<arg.at("n")<<"_l_pc="<<perturbCount;
+			ssh<<"Star_n="<<arg.at("n")<<"_c="<<c<<"_h_pc="<<perturbCount;
+			ssl<<"Star_n="<<arg.at("n")<<"_c="<<c<<"_l_pc="<<perturbCount;
 
 			ofstream fh(ssh.str()+".spt");
 			ofstream fl(ssl.str()+".spt");
 
 			auto seed=time(NULL);
 			generator.seed(seed);
-			analyser.recTime_highest_one_config(fh,c,dp);
+			analyser.spt_highest_one_config(fh,c,dp);
 
 			generator.seed(seed);
-			analyser.recTime_lowest_one_config(fl,c,dp);
+			analyser.spt_lowest_one_config(fl,c,dp);
 
 			cout<<"\r n="<<arg.at("n")<<" c="<<c<<"  "<<flush;
 		}

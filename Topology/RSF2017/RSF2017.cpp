@@ -12,7 +12,7 @@ class RSF : public topology_base
 
     /// function to rewire network
     void recreateNetwork();
-private:
+//private:
 
     struct cumSize_node_Pair{
         int cum;
@@ -20,7 +20,7 @@ private:
         cumSize_node_Pair():cum(0), node(0) {}
     };
 
-    vector<bool> selected;
+    vector<int> selected;
     vector<cumSize_node_Pair> cumSize;
     int activeNodes;
     int cumEnd;
@@ -46,8 +46,12 @@ private:
 
 int main()
 {
-	for(int i=0; i<1000;i++)
-		RSF sf(100,3);
+	auto ti = clock();
+
+	RSF sf(3000,60);
+
+	auto tf = clock();
+	cout<<double(tf-ti) / CLOCKS_PER_SEC<<endl;
 
     return 0;
 }

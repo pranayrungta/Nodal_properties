@@ -1,20 +1,25 @@
-//#include "Topology/common_base.cpp"
-//constexpr double positive_well = 1;
-//constexpr double negative_well = -1;
-//namespace parameter
-//{
-//    constexpr int perturbCount = 10;
-//    constexpr double dt = 0.01;
-//
-//    constexpr double initial_well= negative_well ;
-//    constexpr double spread= 0.25 ;
-//    constexpr double perturbRange_initial = 0;
-//    constexpr double perturbRange_final = 5;
-//}
-////-------------------------------------------------
+#ifndef PARAMETERS ///for testing only
+#define PARAMETERS
 
+#include "./../../../Topology/common_base.cpp"
+constexpr double positive_well = 1;
+constexpr double negative_well = -1;
+namespace parameter
+{
+    constexpr int perturbCount = 10;
+    constexpr int repetitions=100;
+
+    constexpr double dt = 0.01;
+    constexpr double transients = 100;
+
+    constexpr double initial_well= negative_well ;
+    constexpr double spread= 0.25 ;
+    constexpr double perturbRange_initial = 0;
+    constexpr double perturbRange_final = 5;
+}
 #include "./../../../read_data/read_data.cpp"
 
+#endif // PARAMETERS
 
 struct local_Dynamics
 {
@@ -35,12 +40,6 @@ struct local_Dynamics
 };
 class Dynamics
 {public:
-	/// calculates basin stability for a fixed configuration and different initial conditions
-	double BShighest_one_config(const double& c, const data_point& dp);
-
-	double BSlowest_one_config(const double& c, const data_point& dp);
-
-private:
     vector<double> x;
     vector<double> Dx;
     local_Dynamics g;
@@ -54,6 +53,10 @@ private:
 
     constexpr static double unsync = 0;
 
+	/// calculates basin stability for a fixed configuration and different initial conditions
+	double BShighest_one_config(const double& c, const data_point& dp);
+
+	double BSlowest_one_config(const double& c, const data_point& dp);
 };
 
 

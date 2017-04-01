@@ -1,66 +1,70 @@
-#include<fstream>
+#ifndef PARAMETERS ///for testing only
+#define PARAMETERS
 
-int progress=0;
+#include "./../../Topology/common_base.cpp"
+constexpr double positive_well = 1.42;
+constexpr double negative_well = 0.19;
+constexpr double mid_well = 0.77;
+namespace parameter
+{
+    constexpr int perturbCount = 10;
+    constexpr int repetitions=100;
+
+    constexpr double dt = 0.01;
+    constexpr double transients = 100;
+
+    constexpr double initial_well= negative_well ;
+    constexpr double spread= 0.25 ;
+    constexpr double perturbRange_initial = mid_well;
+    constexpr double perturbRange_final = mid_well + 2*(positive_well-mid_well);
+}
+#include "./../../read_data/read_data.cpp"
+
+#endif // PARAMETERS
+
+struct local_Dynamics
+{
+	double  m   = 1     ;
+	double	ro1 = 2.0   ;
+	double	ro2 = 0.08  ;
+	double	alp = 11    ;
+	double	gam = 5.215 ;
+
+	double operator()(const double& x)const
+	{
+		return (
+            m*( 1 + x*x + alp*ro1*x*x*x*x )/
+	   ( 1 + x*x + ro1*x*x*x*x + ro1*ro2*x*x*x*x*x*x)   - gam*x  );
+	}
+};
 
 class Dynamics
 {public:
-	vector<data_point>& config;
-    vector<double> x, Dx;
-
-    Dynamics(vector<data_point>& configs);
+    vector<double> x;
+    vector<double> Dx;
+    local_Dynamics g;
 
     void fnode_BS_initialize(const vector<int>& fnodes);
-    int syncWell();
+    double syncWell();
     void evolveNodes(const double c,const vector<vector<int>>& network);
 
 	vector<int> samplehighest(const multimap<double,int>& btc);
 	vector<int> samplelowest(const multimap<double,int>& btc);
 
+    constexpr static double unsync = mid_well;
+
 	/// calculates basin stability for a fixed configuration and different initial conditions
-	void aoic(const double& c, const data_point& dp, double& BShighest, double& BSlowest);
-	/// calculates BS averaged over configurations
-	void avg_over_config(const double c, double& BShighest, double& BSlowest);
+	double BShighest_one_config(const double& c, const data_point& dp);
 
-private:
-    constexpr static int unsync = 0;
+	double BSlowest_one_config(const double& c, const data_point& dp);
 };
-
-
-
-int main()
-{using parameter::cRange;
-	fill_data();/// data variable is filled
-	Dynamics analyser(data);
-
-	ofstream f("result.txt");
-	f<<"#coupling\tBShighest\tBSlowest"<<endl;
-	double BShighest,BSlowest;
-	for(const auto c : cRange)
-	{
-		analyser.avg_over_config(c,BShighest, BSlowest);
-		f<<c<<"\t"<<BShighest<<"\t"<<BSlowest<<endl;
-	}
-}
-
-
-
-
-
 
 
 
 
 
 ///------------implementation of class functions----------------
-Dynamics::Dynamics(vector<data_point>& configs):config(configs)
-{
-	if(config.size()>0)
-	{
-		int size = config[0].nbr.size();
-		x  = vector<double> (size);
-		Dx = vector<double> (size);
-	}
-}
+
 
 void Dynamics::fnode_BS_initialize(const vector<int>& fnodes)
 {using parameter::initial_well;
@@ -68,14 +72,16 @@ using parameter::spread;
 using parameter::perturbRange_initial;
 using parameter::perturbRange_final;
 
-    uniform_real_distribution<double>  distribution(initial_well-spread, initial_well+spread);
+using real_dist = uniform_real_distribution<double>;
+
+    static real_dist init_well(initial_well-spread, initial_well+spread);
     for(int i=0; i<x.size() ; i++)
     {
-        x[i]= distribution(generator) ;
+        x[i]= init_well(generator) ;
         Dx[i]=0;
     }
 
-    uniform_real_distribution<double>  perturbRange(perturbRange_initial, perturbRange_final);
+    static real_dist perturbRange(perturbRange_initial, perturbRange_final);
     for(auto nodeNo : fnodes)
         x[nodeNo] = perturbRange(generator);
 }
@@ -83,11 +89,11 @@ using parameter::perturbRange_final;
 
 
 ///function to check if all nodes are in same well
-int Dynamics::syncWell()
+double Dynamics::syncWell()
 {
-    double& first = x[0];
+    double first = x[0]-mid_well;
     for(int i=1; i<x.size(); i++)
-        if(x[i]*first<0)
+        if( (x[i]-mid_well)*first<0 )
             return unsync;
 
     if(first>0)return positive_well;
@@ -109,7 +115,7 @@ void Dynamics::evolveNodes(const double c,const vector<vector<int>>& network)
             nf+=x[ network[i][j] ];
         nf /= network[i].size();
 
-        Dx[i] = ( x[i]- x[i]*x[i]*x[i] ) + c*(nf- x[i]) ;
+        Dx[i] = g(x[i]) + c*(nf- x[i]) ;
     }
     //Evolving nodes
     for( i=0; i<n; i++)
@@ -153,50 +159,52 @@ vector<int> Dynamics::samplelowest(const multimap<double,int>& btc)
 }
 
 
-void Dynamics::aoic(const double& c, const data_point& dp,double& BShighest, double& BSlowest)
+/// calculates basin stability for a fixed configuration and different initial conditions
+double Dynamics::BShighest_one_config(const double& c, const data_point& dp)
 {using parameter::repetitions;
 using parameter::transients;
 using  parameter::dt;
+	if(dp.nbr.size()!=x.size())
+	{
+		x.resize(dp.nbr.size());
+		Dx.resize(dp.nbr.size());
+	}
+	auto highest_btc_Nodes = samplehighest(dp.btc);
 
-	BShighest = 0;
+	double BShighest = 0;
 	for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)
 	{
-		fnode_BS_initialize( samplehighest(dp.btc) );
+		fnode_BS_initialize(highest_btc_Nodes);
 		for(double t=0; t<transients; t+=dt)
 			evolveNodes(c,dp.nbr);
 		if(syncWell()==parameter::initial_well)
 			BShighest++;
 	}
 	BShighest /= repetitions;
+	return BShighest;
+}
 
-	BSlowest = 0;
+
+double Dynamics::BSlowest_one_config(const double& c, const data_point& dp)
+{using parameter::repetitions;
+using parameter::transients;
+using  parameter::dt;
+	if(dp.nbr.size()!=x.size())
+	{
+		x.resize(dp.nbr.size());
+		Dx.resize(dp.nbr.size());
+	}
+	auto lowest_btc_Nodes = samplelowest(dp.btc);
+
+	double BSlowest = 0;
 	for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)
 	{
-		fnode_BS_initialize( samplelowest(dp.btc) );
+		fnode_BS_initialize( lowest_btc_Nodes );
 		for(double t=0; t<transients; t+=dt)
 			evolveNodes(c,dp.nbr);
 		if(syncWell()==parameter::initial_well)
 			BSlowest++;
 	}
 	BSlowest /= repetitions;
-}
-
-
-void Dynamics::avg_over_config(const double c, double& BShighest, double& BSlowest)
-{
-	BShighest=0;
-	BSlowest =0;
-	double high=0,low=0;
-	for(auto& ith_config : config)
-	{
-		progress++;
-		cout<<"c= "<<c<<"\tconfigNo: "<<progress<<endl;
-
-		aoic(c,ith_config,high,low);
-		BShighest += high;
-		BSlowest += low;
-	}
-	BShighest/= config.size();
-	BSlowest /= config.size();
-
+	return BSlowest;
 }

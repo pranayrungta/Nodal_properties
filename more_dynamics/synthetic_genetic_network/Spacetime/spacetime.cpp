@@ -1,28 +1,34 @@
 #ifndef PARAMETERS
 #define PARAMETERS
 
-#include "./../../Topology/common_base.cpp"
-constexpr int positive_well = 1;
-constexpr int negative_well = -1;
+#include "./../../../Topology/common_base.cpp"
+constexpr double positive_well = 1.42;
+constexpr double negative_well = 0.19;
+constexpr double mid_well = 0.77;
 namespace parameter
 {
+    const vector<double> cRange {0.9, 1.0, 1.1} ;
+
     constexpr int perturbCount = 10;
+    constexpr int repetitions=100;
 
     constexpr double transients = 100;
     constexpr double dt = 0.01;
 
-    constexpr int initial_well= negative_well ;
+    constexpr double initial_well= negative_well ;
     constexpr double spread= 0.25 ;
-    constexpr double perturbRange_initial = 0;
-    constexpr double perturbRange_final = 5;
+    constexpr double perturbRange_initial = mid_well;
+    constexpr double perturbRange_final = mid_well + 2*(positive_well-mid_well);
 }
+#include "./../../../read_data/read_data.cpp"
 
-#endif
+#endif // PARAMETERS
+///-----------------------------------------------------------
 
 
-#include "./../../read_data/read_data.cpp"
-#include "./../../Dynamics_base.cpp"
-class Dynamics : public Dynamics_base
+#include "./../Dynamics.cpp"
+
+class Spacetime : protected Dynamics
 {public:
 	/// calculates basin stability for a fixed configuration and different initial conditions
 	void spt_highest_one_config(ostream& os,const double& c, const data_point& dp)
@@ -80,4 +86,3 @@ class Dynamics : public Dynamics_base
         }
 	}
 };
-

@@ -4,11 +4,11 @@
 
 int main()
 {
-    vector<int> nRange{100};
+    vector<int> nRange{7};
     vector<int> kRange{1};
-    int iniCond = 100;
+    int iniCond = 3;
 
-	ofstream f("RSF_k=1_ic=100.txt");
+	ofstream f("RSFsample.txt");
 	f<<"[ "<<endl;
     for(auto n : nRange)
     for(auto k : kRange)

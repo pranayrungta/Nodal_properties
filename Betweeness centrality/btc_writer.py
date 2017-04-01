@@ -1,4 +1,4 @@
-filename = 'RSF_k=1_ic=100.txt'
+filename = 'RSFsampleSmall.txt'
 outfilename = 'btc_'+filename
 
 data = eval( open(filename,'r').read() )

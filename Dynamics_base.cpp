@@ -1,4 +1,22 @@
+#ifndef PARAMETERS ///for testing only
+#define PARAMETERS
+
 #include "Topology/common_base.cpp"
+constexpr int positive_well = 1;
+constexpr int negative_well = -1;
+namespace parameter
+{
+    constexpr int perturbCount = 10;
+    constexpr double dt = 0.01;
+
+    constexpr int initial_well= negative_well ;
+    constexpr double spread= 0.25 ;
+    constexpr double perturbRange_initial = 0;
+    constexpr double perturbRange_final = 5;
+}
+
+#endif /// PARAMETERS
+
 
 class Dynamics_base
 {public:
@@ -16,29 +34,13 @@ class Dynamics_base
 };
 
 
-#ifndef PARAMETERS ///for testing only
-#define PARAMETERS
 
-constexpr int positive_well = 1;
-constexpr int negative_well = -1;
-namespace parameter
-{
-    constexpr int perturbCount = 10;
-    constexpr double dt = 0.01;
-
-    constexpr int initial_well= negative_well ;
-    constexpr double spread= 0.25 ;
-    constexpr double perturbRange_initial = 0;
-    constexpr double perturbRange_final = 5;
-}
-
-int main()
+int maindyb()
 {
 	Dynamics_base t;
     cout<<t.x;
 	return 0;
 }
-#endif /// PARAMETERS
 //-------------------------------------------------
 
 
