@@ -1,0 +1,29 @@
+echo "compiling 8"
+icpc -std=c++11 Ring8.cpp
+echo "running"
+./a.out
+echo ""
+echo ""
+
+echo "compiling 20"
+icpc -std=c++11 Ring20.cpp
+echo "running"
+./a.out
+echo ""
+echo ""
+
+echo "compiling 25"
+icpc -std=c++11 Ring25.cpp
+echo "running"
+./a.out
+echo ""
+echo ""
+
+echo "compiling 30"
+icpc -std=c++11 Ring30.cpp
+echo "running"
+./a.out
+echo ""
+echo ""
+
+

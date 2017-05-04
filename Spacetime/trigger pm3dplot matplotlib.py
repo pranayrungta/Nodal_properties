@@ -11,7 +11,7 @@ yRange =  'auto'# [1,50] # 'auto'
 title = 'auto' # None  'auto'  'title'
 # 'auto' set filename as title
 
-colorRange = 'auto' # 'auto'  [0,1]
+colorRange = [-1.5,1.5] # 'auto'  [0,1]
 
 vertical_on_x = True # False  True
 

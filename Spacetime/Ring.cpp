@@ -6,12 +6,12 @@ constexpr int positive_well = 1;
 constexpr int negative_well = -1;
 namespace parameter
 {
-	string datafile = "dataSample.txt";
+	string datafile = "./../Betweeness centrality/data/btc_Ring.txt";
 
-    const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9} ;
-    constexpr int perturbCount=1;
+    const vector<double> cRange {1.0} ;
+    constexpr int perturbCount=4;//4
 
-    constexpr double transients = 3;
+    constexpr double transients = 50;
     constexpr double dt = 0.01;
 
     constexpr int initial_well= negative_well ;

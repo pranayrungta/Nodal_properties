@@ -39,16 +39,11 @@ using parameter::perturbCount;
 		auto& arg = dp.args;
 		for(auto c : cRange)
 		{
-			ostringstream ssh;
-			ostringstream ssl;
-			ssh<<"Ring_n="<<arg.at("n")<<"_k="<<arg.at("k")<<"_c="<<c<<"_h_pc="<<perturbCount;
-			ssl<<"Ring_n="<<arg.at("n")<<"_k="<<arg.at("k")<<"_c="<<c<<"_l_pc="<<perturbCount;
+			ostringstream ss;
+			ss<<"Ring_n="<<arg.at("n")<<"_k="<<arg.at("k")<<"_c="<<c<<"_pc="<<perturbCount;
 
-			ofstream fh(ssh.str()+".txt");
-			ofstream fl(ssl.str()+".txt");
-
-			analyser.spt_highest_one_config(fh,c,dp);
-			analyser.spt_lowest_one_config(fl,c,dp);
+			ofstream f(ss.str()+".spt");
+			analyser.spt_lowest_one_config(f,c,dp);
 
 			cout<<"\r n="<<arg.at("n")<<" k="<< arg.at("k")
 			    <<" c="<<c<<"  "<<flush;
