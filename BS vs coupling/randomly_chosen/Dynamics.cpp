@@ -10,8 +10,6 @@ namespace parameter
     constexpr double transients = 3;
     constexpr double dt = 0.01;
 
-    constexpr int perturbCount = 10;
-
     constexpr double initial_well= negative_well ;
     constexpr double spread= 0.25 ;
     constexpr double perturbRange_initial = 0;
@@ -26,9 +24,8 @@ namespace parameter
 
 class Dynamics :private Dynamics_base
 {public:
-	double BS_rand_nodes_perturb(const double& c, const data_point& dp)
+	double BS_rand_nodes_perturb(const double& c, const data_point& dp,const int perturbCount)
 	{using parameter::repetitions;
-	using parameter::perturbCount;
 	using parameter::transients;
 	using  parameter::dt;
 
@@ -46,8 +43,6 @@ class Dynamics :private Dynamics_base
 				evolveNodes(c,dp.nbr);
 			if(syncWell()==parameter::initial_well)
 				B_S_++;
-//			for(int i=0; i<x.size(); i++)
-//				cout<<"node "<<i<<" : "<<x[i]<<endl;
 		}
 		B_S_ /= repetitions;
 		return B_S_ ;

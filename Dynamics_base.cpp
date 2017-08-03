@@ -6,7 +6,7 @@ constexpr int positive_well = 1;
 constexpr int negative_well = -1;
 namespace parameter
 {
-    constexpr int perturbCount = 10;
+    //constexpr int perturbCount = 10;
     constexpr double dt = 0.01;
 
     constexpr int initial_well= negative_well ;
@@ -27,15 +27,18 @@ class Dynamics_base
     int syncWell();
     void evolveNodes(const double c,const vector<vector<int>>& network);
 
-	vector<int> samplehighest(const multimap<double,int>& btc);
-	vector<int> samplelowest(const multimap<double,int>& btc);
+	vector<int> samplehighest(const multimap<double,int>& btc, int perturbCount);
+	vector<int> samplelowest(const multimap<double,int>& btc, int perturbCount);
+
+	vector<int> highest_degree(const vector<vector<int>>& nbrs, int perturbCount);
+	vector<int> lowest_degree(const vector<vector<int>>& nbrs, int perturbCount);
 
     constexpr static int unsync = 0;
 };
 
 
 
-int maindyb()
+int maindymb()
 {
 	Dynamics_base t;
     cout<<t.x;
@@ -110,8 +113,8 @@ void Dynamics_base::evolveNodes(const double c,const vector<vector<int>>& networ
 
 
 
-vector<int> Dynamics_base::samplehighest(const multimap<double,int>& btc)
-{using parameter::perturbCount;
+vector<int> Dynamics_base::samplehighest(const multimap<double,int>& btc, int perturbCount)
+{
 	if(btc.size()<perturbCount)
 	{
 		cout<<"multimap has less elements than requested"<<endl;
@@ -127,8 +130,8 @@ vector<int> Dynamics_base::samplehighest(const multimap<double,int>& btc)
 	return values;
 }
 
-vector<int> Dynamics_base::samplelowest(const multimap<double,int>& btc)
-{using parameter::perturbCount;
+vector<int> Dynamics_base::samplelowest(const multimap<double,int>& btc, int perturbCount)
+{
 	if(btc.size()<perturbCount)
 	{
 		cout<<"multimap has less elements than requested"<<endl;
@@ -136,6 +139,52 @@ vector<int> Dynamics_base::samplelowest(const multimap<double,int>& btc)
 	}
 	vector<int> values(perturbCount);
 	auto lowest = btc.begin();
+	for(int i=0; i<perturbCount; i++)
+	{
+		values[i] = (*lowest).second;
+		lowest++;
+	}
+	return values;
+}
+
+
+
+vector<int> Dynamics_base::highest_degree(const vector<vector<int>>& nbrs, int perturbCount)
+{
+	if(nbrs.size()<perturbCount)
+	{
+		cout<<"nbr has less elements than requested"<<endl;
+		exit(1);
+	}
+
+	multimap<double,int> degree_node;
+	for(int i=0; i<nbrs.size(); i++)
+		degree_node.insert( pair<int,int>(nbrs[i].size(),i) );
+
+	vector<int> values(perturbCount);
+	auto highest = degree_node.end();
+	for(int i=0; i<perturbCount; i++)
+	{
+		highest--;
+		values[i] = (*highest).second;
+	}
+	return values;
+}
+
+vector<int> Dynamics_base::lowest_degree(const vector<vector<int>>& nbrs, int perturbCount)
+{
+	if(nbrs.size()<perturbCount)
+	{
+		cout<<"nbr has less elements than requested"<<endl;
+		exit(1);
+	}
+
+	multimap<double,int> degree_node;
+	for(int i=0; i<nbrs.size(); i++)
+		degree_node.insert( pair<int,int>(nbrs[i].size(),i) );
+
+	vector<int> values(perturbCount);
+	auto lowest =  degree_node.begin();
 	for(int i=0; i<perturbCount; i++)
 	{
 		values[i] = (*lowest).second;

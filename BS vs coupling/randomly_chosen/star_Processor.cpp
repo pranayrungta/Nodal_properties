@@ -9,7 +9,7 @@ namespace parameter
 	string datafile = "./../btc_Star.txt";
 
     const vector<double> cRange {1} ;
-    constexpr int perturbCount=50;
+    const vector<int> perturbCountRange{1};
 
     constexpr int repetitions =1 ;
 
@@ -36,9 +36,8 @@ struct BS_count
 using star_results = map<int,map<double,BS_count>>;
 
 
-void write_to_file(const star_results& results)
-{using parameter::perturbCount;
-
+void write_to_file(const star_results& results, const int perturbCount)
+{
 	for(auto& nv:results)
     {
         ostringstream ssl;
@@ -56,29 +55,33 @@ void write_to_file(const star_results& results)
 int main()
 {using parameter::cRange;
 using parameter::datafile;
+using parameter::perturbCountRange;
 
 	const vector<data_point> data = read_data_from_file(datafile);
 	Dynamics analyser;
 
-	///-------processing------
-	star_results results;
-    for(auto& dp : data)
+	for(const int perturbCount: perturbCountRange)
 	{
-		auto& arg = dp.args;
-		for(auto c : cRange)
+		///-------processing------
+		star_results results;
+		for(auto& dp : data)
 		{
-			BS_count& r=results[ arg.at("n") ][c];
-			r.bs +=analyser.BS_rand_nodes_perturb(c,dp);
-			r.count++;
+			auto& arg = dp.args;
+			for(auto c : cRange)
+			{
+				BS_count& r=results[ arg.at("n") ][c];
+				r.bs +=analyser.BS_rand_nodes_perturb(c,dp,perturbCount);
+				r.count++;
 
-			cout<<"\r n="<<arg.at("n")<<" c="<<c
-			    <<" count="<<r.count<<"  "<<flush;
+				cout<<"\r n="<<arg.at("n")<<" c="<<c
+					<<" count="<<r.count<<"  "<<flush;
+			}
 		}
-	}
-	///------dividing for avg--------
-	for(auto& nv:results)
-	for(auto& cv: nv.second)
-		cv.second.bs /=cv.second.count;
+		///------dividing for avg--------
+		for(auto& nv:results)
+		for(auto& cv: nv.second)
+			cv.second.bs /=cv.second.count;
 
-	write_to_file(results);
+		write_to_file(results,perturbCount);
+	}
 }

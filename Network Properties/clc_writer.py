@@ -1,5 +1,5 @@
-filename = 'RSFsampleSmall.txt'
-outfilename = 'btc_'+filename
+filename = 'data/RSF_k=2_ic=100.txt'
+outfilename = 'data/clc_RSF_k=2_ic=100.txt'
 
 data = eval( open(filename,'r').read() )
 
@@ -15,7 +15,7 @@ def netx_graph(connections):
 for i,(args,links) in enumerate(data):
     print args
     graph = netx_graph(links)
-    btc = nx.betweenness_centrality(graph)
+    btc = nx.closeness_centrality(graph)
     data[i].append(btc)
 
 f = open(outfilename,'w')

@@ -9,7 +9,7 @@ namespace parameter
 	string datafile = "dataSample.txt";
 
     const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9} ;
-    constexpr int perturbCount=1;
+    const vector<int> perturbCountRange{1};
 
     constexpr int repetitions =2 ;
 
@@ -36,9 +36,8 @@ struct BS_count
 using rsf_results = map<int,map<int,map<double,BS_count>>>;
 
 
-void write_to_file(const rsf_results& results)
-{using parameter::perturbCount;
-
+void write_to_file(const rsf_results& results, const int perturbCount)
+{
 	for(auto& nv:results)
     for(auto& kv :nv.second)
     {
@@ -57,31 +56,35 @@ void write_to_file(const rsf_results& results)
 int main()
 {using parameter::cRange;
 using parameter::datafile;
+using parameter::perturbCountRange;
 
 	const vector<data_point> data = read_data_from_file(datafile);
 	Dynamics analyser;
 
-	///-------processing------
-	rsf_results results;
-    for(auto& dp:data)
+	for(const int perturbCount: perturbCountRange)
 	{
-		auto& arg = dp.args;
-		for(auto c : cRange)
+		///-------processing------
+		rsf_results results;
+		for(auto& dp:data)
 		{
-			BS_count& r=results[ arg.at("n") ][ arg.at("k") ][c];
-			r.bs +=analyser.BS_rand_nodes_perturb(c,dp);
-			r.count++;
+			auto& arg = dp.args;
+			for(auto c : cRange)
+			{
+				BS_count& r=results[ arg.at("n") ][ arg.at("k") ][c];
+				r.bs +=analyser.BS_rand_nodes_perturb(c,dp,perturbCount);
+				r.count++;
 
-			cout<<"\r n="<<arg.at("n")<<" k="<< arg.at("k")
-			    <<" c="<<c<<" count="<<r.count<<"  "<<flush;
+				cout<<"\r n="<<arg.at("n")<<" k="<< arg.at("k")
+					<<" c="<<c<<" count="<<r.count<<"  "<<flush;
+			}
 		}
-	}
-	///------dividing for avg--------
-	for(auto& nv:results)
-	for(auto& kv :nv.second)
-	for(auto& cv: kv.second)
-		cv.second.bs/=cv.second.count;
+		///------dividing for avg--------
+		for(auto& nv:results)
+		for(auto& kv :nv.second)
+		for(auto& cv: kv.second)
+			cv.second.bs/=cv.second.count;
 
-	write_to_file(results);
+		write_to_file(results,perturbCount);
+	}
 }
 

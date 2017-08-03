@@ -9,7 +9,7 @@ namespace parameter
 	string datafile = "./../btc_Star.txt";
 
     const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9} ;
-    constexpr int perturbCount=1;
+    const vector<int> perturbCountRange{1};
 
     constexpr int repetitions =2 ;
 
@@ -37,9 +37,8 @@ struct BS_count
 using star_results = map<int,map<double,BS_count>>;
 
 
-void write_to_file(const star_results& results)
-{using parameter::perturbCount;
-
+void write_to_file(const star_results& results,const int perturbCount)
+{
 	for(auto& nv:results)
     {
         ostringstream ssh;
@@ -64,32 +63,36 @@ void write_to_file(const star_results& results)
 int main()
 {using parameter::cRange;
 using parameter::datafile;
+using parameter::perturbCountRange;
 
 	const vector<data_point> data = read_data_from_file(datafile);
 	Dynamics analyser;
 
-	///-------processing------
-	star_results results;
-    for(auto& dp : data)
+	for(int perturbCount : perturbCountRange)
 	{
-		auto& arg = dp.args;
-		for(auto c : cRange)
+		///-------processing------
+		star_results results;
+		for(auto& dp : data)
 		{
-			BS_count& r=results[ arg.at("n") ][c];
-			r.bshighest+=analyser.BShighest_one_config(c,dp);
-			r.bslowest +=analyser.BSlowest_one_config(c,dp);
-			r.count++;
+			auto& arg = dp.args;
+			for(auto c : cRange)
+			{
+				BS_count& r=results[ arg.at("n") ][c];
+				r.bshighest+=analyser.BShighest_one_config(c,dp,perturbCount);
+				r.bslowest +=analyser.BSlowest_one_config(c,dp,perturbCount);
+				r.count++;
 
-			cout<<"\r n="<<arg.at("n")<<" c="<<c
-			    <<" count="<<r.count<<"  "<<flush;
+				cout<<"\r n="<<arg.at("n")<<" c="<<c
+					<<" count="<<r.count<<"  "<<flush;
+			}
 		}
+		///------dividing for avg--------
+		for(auto& nv:results)
+		for(auto& cv: nv.second)
+		{
+			cv.second.bshighest/=cv.second.count;
+			cv.second.bslowest /=cv.second.count;
+		}
+		write_to_file(results,perturbCount);
 	}
-	///------dividing for avg--------
-	for(auto& nv:results)
-	for(auto& cv: nv.second)
-	{
-		cv.second.bshighest/=cv.second.count;
-		cv.second.bslowest /=cv.second.count;
-	}
-	write_to_file(results);
 }
