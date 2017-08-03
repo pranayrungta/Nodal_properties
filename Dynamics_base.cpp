@@ -2,11 +2,13 @@
 #define PARAMETERS
 
 #include "Topology/common_base.cpp"
+#include "read_data/read_data.cpp"
 constexpr int positive_well = 1;
 constexpr int negative_well = -1;
 namespace parameter
 {
-    //constexpr int perturbCount = 10;
+	constexpr int repetitions =2 ;
+    constexpr double transients = 3;
     constexpr double dt = 0.01;
 
     constexpr int initial_well= negative_well ;
@@ -23,6 +25,8 @@ class Dynamics_base
     vector<double> x;
     vector<double> Dx;
 
+    constexpr static int unsync = 0;
+
     void fnode_BS_initialize(const vector<int>& fnodes);
     int syncWell();
     void evolveNodes(const double c,const vector<vector<int>>& network);
@@ -33,7 +37,7 @@ class Dynamics_base
 	vector<int> highest_degree(const vector<vector<int>>& nbrs, int perturbCount);
 	vector<int> lowest_degree(const vector<vector<int>>& nbrs, int perturbCount);
 
-    constexpr static int unsync = 0;
+	double BS_one_config(const double& c, const data_point& dp, const vector<int>& perturb_nodes);
 };
 
 
@@ -191,4 +195,26 @@ vector<int> Dynamics_base::lowest_degree(const vector<vector<int>>& nbrs, int pe
 		lowest++;
 	}
 	return values;
+}
+
+double Dynamics_base::BS_one_config(const double& c, const data_point& dp, const vector<int>& perturb_nodes)
+{using parameter::repetitions;
+using parameter::transients;
+using  parameter::dt;
+	if(dp.nbr.size()!=x.size())
+	{
+		x.resize(dp.nbr.size());
+		Dx.resize(dp.nbr.size());
+	}
+	double BS= 0;
+	for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)
+	{
+		fnode_BS_initialize(perturb_nodes);
+		for(double t=0; t<transients; t+=dt)
+			evolveNodes(c,dp.nbr);
+		if(syncWell()==parameter::initial_well)
+			BS++;
+	}
+	BS /= repetitions;
+	return BS;
 }

@@ -9,7 +9,7 @@ namespace parameter
 	string datafile = "dataSample.txt";
 
     const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9} ;
-    const vector<int> perturbCountRange {1} ;
+    const vector<int> perturbCountRange{1};
 
     constexpr int repetitions =2 ;
 
@@ -30,33 +30,25 @@ namespace parameter
 
 struct BS_count
 {
-	double bshighest=0;
-	double bslowest=0;
+	double bs=0;
 	int count=0;
 };
 using rsf_results = map<int,map<int,map<double,BS_count>>>;
 
 
-void write_to_file(const rsf_results& results,const int perturbCount)
+void write_to_file(const rsf_results& results, const int perturbCount)
 {
 	for(auto& nv:results)
     for(auto& kv :nv.second)
     {
-        ostringstream ssh;
         ostringstream ssl;
-        ssh<<"RSF_n="<<nv.first<<"_k="<<kv.first<<"_h_pc="<<perturbCount;
-        ssl<<"RSF_n="<<nv.first<<"_k="<<kv.first<<"_l_pc="<<perturbCount;
+        ssl<<"RSF_n="<<nv.first<<"_k="<<kv.first<<"_pc="<<perturbCount;
 
-        ofstream fh(ssh.str()+".txt");
         ofstream fl(ssl.str()+".txt");
-        fh<<"#coupling"<<"\t"<<"BShighest"<<endl;
         fl<<"#coupling"<<"\t"<<"BSlowest"<<endl;
 
         for(auto& cv: kv.second)
-        {
-            fh<<cv.first<<"\t"<<cv.second.bshighest<<endl;
-            fl<<cv.first<<"\t"<<cv.second.bslowest<<endl;
-        }
+            fl<<cv.first<<"\t"<<cv.second.bs<<endl;
     }
 }
 
@@ -69,7 +61,7 @@ using parameter::perturbCountRange;
 	const vector<data_point> data = read_data_from_file(datafile);
 	Dynamics analyser;
 
-	for(int perturbCount : perturbCountRange)
+	for(const int perturbCount: perturbCountRange)
 	{
 		///-------processing------
 		rsf_results results;
@@ -79,8 +71,7 @@ using parameter::perturbCountRange;
 			for(auto c : cRange)
 			{
 				BS_count& r=results[ arg.at("n") ][ arg.at("k") ][c];
-				r.bshighest+=analyser.BShighest_one_config(c,dp,perturbCount);
-				r.bslowest +=analyser.BSlowest_one_config(c,dp,perturbCount);
+				r.bs +=analyser.BS_rand_nodes_perturb(c,dp,perturbCount);
 				r.count++;
 
 				cout<<"\r n="<<arg.at("n")<<" k="<< arg.at("k")
@@ -91,10 +82,8 @@ using parameter::perturbCountRange;
 		for(auto& nv:results)
 		for(auto& kv :nv.second)
 		for(auto& cv: kv.second)
-		{
-			cv.second.bshighest/=cv.second.count;
-			cv.second.bslowest/=cv.second.count;
-		}
+			cv.second.bs/=cv.second.count;
+
 		write_to_file(results,perturbCount);
 	}
 }

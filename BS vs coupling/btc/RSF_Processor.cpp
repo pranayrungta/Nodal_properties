@@ -9,7 +9,7 @@ namespace parameter
 	string datafile = "dataSample.txt";
 
     const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9} ;
-    const vector<int> perturbCountRange{1};
+    const vector<int> perturbCountRange {1} ;
 
     constexpr int repetitions =2 ;
 
@@ -24,34 +24,7 @@ namespace parameter
 
 #endif // PARAMETERS
 
-#include "./../../read_data/read_data.cpp"
-#include "Dynamics.cpp"
-#include<sstream>
-
-struct BS_count
-{
-	double bs=0;
-	int count=0;
-};
-using rsf_results = map<int,map<int,map<double,BS_count>>>;
-
-
-void write_to_file(const rsf_results& results, const int perturbCount)
-{
-	for(auto& nv:results)
-    for(auto& kv :nv.second)
-    {
-        ostringstream ssl;
-        ssl<<"RSF_n="<<nv.first<<"_k="<<kv.first<<"_pc="<<perturbCount;
-
-        ofstream fl(ssl.str()+".txt");
-        fl<<"#coupling"<<"\t"<<"BSlowest"<<endl;
-
-        for(auto& cv: kv.second)
-            fl<<cv.first<<"\t"<<cv.second.bs<<endl;
-    }
-}
-
+#include "./../common.cpp"
 
 int main()
 {using parameter::cRange;
@@ -59,19 +32,23 @@ using parameter::datafile;
 using parameter::perturbCountRange;
 
 	const vector<data_point> data = read_data_from_file(datafile);
-	Dynamics analyser;
+	Dynamics_base analyser;
 
-	for(const int perturbCount: perturbCountRange)
+	for(int perturbCount : perturbCountRange)
 	{
 		///-------processing------
-		rsf_results results;
+		map<int,map<int,map<double,BS_count>>> results;
 		for(auto& dp:data)
 		{
 			auto& arg = dp.args;
 			for(auto c : cRange)
 			{
 				BS_count& r=results[ arg.at("n") ][ arg.at("k") ][c];
-				r.bs +=analyser.BS_rand_nodes_perturb(c,dp,perturbCount);
+
+				vector<int> perturbNodes = analyser.samplehighest(dp.btc,perturbCount);
+				r.bshighest+=analyser.BS_one_config(c,dp,perturbNodes);
+				perturbNodes = analyser.samplelowest(dp.btc,perturbCount);
+				r.bslowest += analyser.BS_one_config(c,dp,perturbNodes);
 				r.count++;
 
 				cout<<"\r n="<<arg.at("n")<<" k="<< arg.at("k")
@@ -82,9 +59,19 @@ using parameter::perturbCountRange;
 		for(auto& nv:results)
 		for(auto& kv :nv.second)
 		for(auto& cv: kv.second)
-			cv.second.bs/=cv.second.count;
-
-		write_to_file(results,perturbCount);
+		{
+			cv.second.bshighest/=cv.second.count;
+			cv.second.bslowest/=cv.second.count;
+		}
+		///-------writing to file--------
+		for(auto& nv:results)
+		for(auto& kv :nv.second)
+		{
+			ostringstream ssh;
+			ostringstream ssl;
+			ssh<<"RSF_n="<<nv.first<<"_k="<<kv.first<<"_h_pc="<<perturbCount<<".txt";
+			ssl<<"RSF_n="<<nv.first<<"_k="<<kv.first<<"_l_pc="<<perturbCount<<".txt";
+			write_CvsBS(ssh.str(), ssl.str(), kv.second);
+		}
 	}
 }
-

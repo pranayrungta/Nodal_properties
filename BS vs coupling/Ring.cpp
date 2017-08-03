@@ -10,8 +10,7 @@ namespace parameter
 
     const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,
                                  1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8} ;
-
-    constexpr int perturbCount=15;
+    const vector<int> perturbCountRange{1};
     constexpr int repetitions=1000;
 
     constexpr double transients = 100;
@@ -24,5 +23,7 @@ namespace parameter
 }
 #endif // PARAMETERS
 
-#include "randomly_chosen/ring_Processor.cpp"
-//#include "btc_source/ring_Processor.cpp"
+#include "randomly/ring_Processor.cpp"
+//#include "btc/ring_Processor.cpp"
+//#include "clc/ring_Processor.cpp"
+//#include "degree/ring_Processor.cpp"

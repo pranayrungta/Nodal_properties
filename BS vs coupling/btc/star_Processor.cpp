@@ -24,41 +24,10 @@ namespace parameter
 
 #endif // PARAMETERS
 
-#include "./../../read_data/read_data.cpp"
-#include "Dynamics.cpp"
-#include<sstream>
-
-struct BS_count
-{
-	double bshighest=0;
-	double bslowest=0;
-	int count=0;
-};
-using star_results = map<int,map<double,BS_count>>;
 
 
-void write_to_file(const star_results& results,const int perturbCount)
-{
-	for(auto& nv:results)
-    {
-        ostringstream ssh;
-        ostringstream ssl;
-        ssh<<"Star_n="<<nv.first<<"_h_pc="<<perturbCount;
-        ssl<<"Star_n="<<nv.first<<"_l_pc="<<perturbCount;
 
-        ofstream fh(ssh.str()+".txt");
-        ofstream fl(ssl.str()+".txt");
-        fh<<"#coupling"<<"\t"<<"BShighest"<<endl;
-        fl<<"#coupling"<<"\t"<<"BSlowest"<<endl;
-
-        for(auto& cv: nv.second)
-        {
-            fh<<cv.first<<"\t"<<cv.second.bshighest<<endl;
-            fl<<cv.first<<"\t"<<cv.second.bslowest<<endl;
-        }
-    }
-}
-
+#include "./../common.cpp"
 
 int main()
 {using parameter::cRange;
@@ -66,20 +35,23 @@ using parameter::datafile;
 using parameter::perturbCountRange;
 
 	const vector<data_point> data = read_data_from_file(datafile);
-	Dynamics analyser;
+	Dynamics_base analyser;
 
 	for(int perturbCount : perturbCountRange)
 	{
 		///-------processing------
-		star_results results;
+		map<int,map<double,BS_count>> results;
 		for(auto& dp : data)
 		{
 			auto& arg = dp.args;
 			for(auto c : cRange)
 			{
 				BS_count& r=results[ arg.at("n") ][c];
-				r.bshighest+=analyser.BShighest_one_config(c,dp,perturbCount);
-				r.bslowest +=analyser.BSlowest_one_config(c,dp,perturbCount);
+
+				vector<int> perturbNodes = analyser.samplehighest(dp.btc,perturbCount);
+				r.bshighest+=analyser.BS_one_config(c,dp,perturbNodes);
+				perturbNodes = analyser.samplelowest(dp.btc,perturbCount);
+				r.bslowest += analyser.BS_one_config(c,dp,perturbNodes);
 				r.count++;
 
 				cout<<"\r n="<<arg.at("n")<<" c="<<c
@@ -93,6 +65,14 @@ using parameter::perturbCountRange;
 			cv.second.bshighest/=cv.second.count;
 			cv.second.bslowest /=cv.second.count;
 		}
-		write_to_file(results,perturbCount);
+		///-------writing to file--------
+		for(auto& nv:results)
+		{
+			ostringstream ssh;
+			ostringstream ssl;
+			ssh<<"Star_n="<<nv.first<<"_h_pc="<<perturbCount<<".txt";
+			ssl<<"Star_n="<<nv.first<<"_l_pc="<<perturbCount<<".txt";
+			write_CvsBS(ssh.str(), ssl.str(), nv.second);
+		}
 	}
 }

@@ -1,9 +1,7 @@
 #ifndef COMMON_BASE_CPP
 #define COMMON_BASE_CPP
 
-#include<iostream>
-#include<vector>
-#include<map>
+#include"write_basic.cpp"
 #include<random>
 #include<ctime>
 #include<algorithm>
@@ -13,7 +11,7 @@ using namespace std ;
 
 mt19937 generator(time(NULL));//(12345);
 
-template<class topology>
+template<typename topology>
 map<int,vector<int>> getDegreeDistribution(const topology& network);
 
 
@@ -37,13 +35,6 @@ ostream& operator<<(ostream& os, const topology_base& network)
 {	return network.display(os);	}
 
 
-
-template<typename T>
-ostream& operator<<(ostream& os, const vector<T> var);
-
-template<typename T1, typename T2>
-ostream& operator<<(ostream& os, const map<T1,T2>& var);
-
 vector<int> sample_by_random_pickup(const int& lower, const int& upper, const int& no_of_samples, const int& except);
 
 vector<int> sample_by_shuffle(const int& lower, const int& upper, const int& no_of_samples, const int& except, const int& size);
@@ -51,9 +42,12 @@ vector<int> sample_by_shuffle(const int& lower, const int& upper, const int& no_
 vector<int> sample(const int& lower, const int& upper, const int& no_of_samples, const int& except);
 
 
-int main_toTest()
+int main_test()
 {
-	topology_base a({});
+	topology_base a({{2,5,4},
+					 {5,4},
+					 }
+					);
 	cout<<a;
 }
 
@@ -85,33 +79,7 @@ map<int,vector<int>> getDegreeDistribution(const topology& network)
 	return degree;
 }
 
-template<typename T>
-ostream& operator<<(ostream& os, const vector<T> var)
-{
-    os<<"[ ";
-    if(var.size()>0)
-    {
-        os<< var[0];
-        for(int i=1; i<var.size(); i++)
-            os<<", "<<var[i];
-    }
-    os<<" ]";
-    return os;
-}
 
-template<typename T1, typename T2>
-ostream& operator<<(ostream& os, const map<T1,T2>& var)
-{
-	os<<"{"<<endl;
-    if(var.size()>0)
-    {
-    	auto i = var.begin();
-        os<<"   "<<(*i).first<<" : "<<(*i).second;
-        for(i++; i!=var.end(); i++)
-			os<<" ,\n   "<<(*i).first<<" : "<<(*i).second;
-    }
-	return os<<"\n}";
-}
 
 //function to generate set of distinct random numbers excluding one number
 vector<int> sample_by_random_pickup(const int& lower, const int& upper, const int& no_of_samples, const int& except)
@@ -125,7 +93,7 @@ vector<int> sample_by_random_pickup(const int& lower, const int& upper, const in
         r=dis(generator);
         flag=0;
         for(int i=0; i<c; i++)
-        if (r==result[i]){ flag=1; break;}
+			if (r==result[i]){ flag=1; break;}
         if (flag==0 && r!=except) {result[c]=r; c++; }
     }
     return result;

@@ -1,7 +1,0 @@
-echo "compiling"
-icpc -std=c++11 RSF_Processor.cpp
-echo "running"
-./a.out
-echo ""
-echo ""
-

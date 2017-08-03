@@ -24,42 +24,10 @@ namespace parameter
 
 #endif // PARAMETERS
 
-#include "./../../read_data/read_data.cpp"
-#include "Dynamics.cpp"
-#include<sstream>
-
-struct BS_count
-{
-	double bshighest=0;
-	double bslowest=0;
-	int count=0;
-};
-using ring_results = map<int,map<int,map<double,BS_count>>>;
 
 
-void write_to_file(const ring_results& results,const int perturbCount)
-{
-	for(auto& nv:results)
-    for(auto& kv :nv.second)
-    {
-        ostringstream ssh;
-        ostringstream ssl;
-        ssh<<"Ring_n="<<nv.first<<"_k="<<kv.first<<"_h_pc="<<perturbCount;
-        ssl<<"Ring_n="<<nv.first<<"_k="<<kv.first<<"_l_pc="<<perturbCount;
 
-        ofstream fh(ssh.str()+".txt");
-        ofstream fl(ssl.str()+".txt");
-        fh<<"#coupling"<<"\t"<<"BShighest"<<endl;
-        fl<<"#coupling"<<"\t"<<"BSlowest"<<endl;
-
-        for(auto& cv: kv.second)
-        {
-            fh<<cv.first<<"\t"<<cv.second.bshighest<<endl;
-            fl<<cv.first<<"\t"<<cv.second.bslowest<<endl;
-        }
-    }
-}
-
+#include "./../common.cpp"
 
 int main()
 {using parameter::cRange;
@@ -67,20 +35,23 @@ using parameter::datafile;
 using parameter::perturbCountRange;
 
 	const vector<data_point> data = read_data_from_file(datafile);
-	Dynamics analyser;
+	Dynamics_base analyser;
 
 	for(int perturbCount : perturbCountRange)
 	{
 		///-------processing------
-		ring_results results;
+		map<int,map<int,map<double,BS_count>>> results;
 		for(auto& dp:data)
 		{
 			auto& arg = dp.args;
 			for(auto c : cRange)
 			{
 				BS_count& r=results[ arg.at("n") ][ arg.at("k") ][c];
-				r.bshighest+=analyser.BShighest_one_config(c,dp,perturbCount);
-				r.bslowest +=analyser.BSlowest_one_config(c,dp,perturbCount);
+
+				vector<int> perturbNodes = analyser.highest_degree(dp.nbr,perturbCount);
+				r.bshighest+=analyser.BS_one_config(c,dp,perturbNodes);
+				perturbNodes= analyser.lowest_degree(dp.nbr,perturbCount);
+				r.bslowest +=analyser.BS_one_config(c,dp,perturbNodes);
 				r.count++;
 
 				cout<<"\r n="<<arg.at("n")<<" k="<< arg.at("k")
@@ -95,6 +66,15 @@ using parameter::perturbCountRange;
 			cv.second.bshighest/=cv.second.count;
 			cv.second.bslowest/=cv.second.count;
 		}
-		write_to_file(results,perturbCount);
+		///-----writing to file------
+		for(auto& nv:results)
+		for(auto& kv :nv.second)
+		{
+			ostringstream ssh;
+			ostringstream ssl;
+			ssh<<"Ring_n="<<nv.first<<"_k="<<kv.first<<"_h_pc="<<perturbCount;
+			ssl<<"Ring_n="<<nv.first<<"_k="<<kv.first<<"_l_pc="<<perturbCount;
+			write_CvsBS(ssh.str(), ssl.str(), kv.second);
+		}
 	}
 }

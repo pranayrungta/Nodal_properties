@@ -1,5 +1,0 @@
-echo "compiling"
-icpc -std=c++11 Star_pc1.cpp
-echo "running"
-./a.out
-
