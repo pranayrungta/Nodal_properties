@@ -13,6 +13,12 @@ class RSF : public topology_base
     /// function to rewire network
     void recreateNetwork();
 
+	string tag()
+	{
+		ostringstream ss;
+		ss<<"RSF_n="<<nbr.size()<<"_k="<<nbr.back().size();
+		return ss.str();
+	}
 private:
     struct probPair{
         double p;
@@ -50,6 +56,7 @@ private:
 		for(int i=activeNodes; i<nbr.size(); i++)
 			addNewNode();
 	}
+
 };
 
 
@@ -57,7 +64,7 @@ int mainRSF()
 {
     RSF sf(9,2);
     cout<<sf;
-
+	cout<<sf.tag();
 //    auto dd = getDegreeDistribution(sf);
 //
 //    cout<<sf<<"\nDegree distribution :\n"<<dd<<endl<<endl;

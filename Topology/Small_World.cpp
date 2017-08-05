@@ -20,6 +20,12 @@ class Small_World : public topology_base
 
 	ostream& display(ostream& os)const override;
 
+	string tag(string swtype="S")
+	{
+		ostringstream ss;
+		ss<<"SW"<<swtype<<"_n="<<nbr.size()<<"_k="<<nbr.back().size();
+		return ss.str();
+	}
 private:
     vector<bool> isRandom ;
 };
@@ -37,6 +43,7 @@ int mainSW()
 	cout<<s;
 	cout<<"size = "<<s.size()<<endl;
 
+	cout<<s.tag();
 	return 0;
 }
 

@@ -17,12 +17,20 @@ class Star : public topology_base
 			nbr[i][0] = 0;
 		}
 	}
+
+	string tag()
+	{
+		ostringstream ss;
+		ss<<"Star_n="<<nbr.size();
+		return ss.str();
+	}
 };
 
 int mainStar()
 {
-    Star a(10,-1);
+    Star a(10);
     cout<<a<<a[0]<<endl;
+    cout<<a.tag();
 //    cout<<a.avgx();
 //    cout<< endl<< 1.2 ;
     return 0;

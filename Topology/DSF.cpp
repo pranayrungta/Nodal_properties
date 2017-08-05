@@ -17,6 +17,12 @@ class DSF : public topology_base
 		allLevel_connections();
 	}
 
+	string tag()
+	{
+		ostringstream ss;
+		ss<<"DSF_o="<<order;
+		return ss.str();
+	}
 private:
     int order;
 
@@ -34,12 +40,12 @@ private:
 
 int mainDSF()
 {
-    DSF net(2, -1);
-    cout<<DSF(2,-1)<<endl;
+    DSF net(2);
+    cout<<DSF(2)<<endl;
 
     auto dd = getDegreeDistribution(net);
-    cout<<"Degree distribution :\n"<<dd;
-
+    cout<<"Degree distribution :\n"<<dd<<endl;
+	cout<<net.tag();
     return 0;
 }
 

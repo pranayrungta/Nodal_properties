@@ -28,15 +28,23 @@ class Ring : public topology_base
 			}
 		}
 	}
+
+	string tag()
+	{
+		ostringstream ss;
+		ss<<"Ring_n="<<nbr.size()<<"_k="<<nbr.back().size();
+		return ss.str();
+	}
 };
 
 
-int mainring()
+int mainRing()
 {
     Ring a(10,2);
 //    a.display_details();
     cout<<a<<a[0]<<endl;
     //cout<<Ring(88,3);
+    cout<<a.tag();
     return 0;
 }
 

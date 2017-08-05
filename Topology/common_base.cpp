@@ -2,6 +2,7 @@
 #define COMMON_BASE_CPP
 
 #include"write_basic.cpp"
+#include<sstream>
 #include<random>
 #include<ctime>
 #include<algorithm>
