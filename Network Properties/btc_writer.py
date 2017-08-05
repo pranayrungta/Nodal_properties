@@ -21,5 +21,5 @@ for i,(args,links) in enumerate(data):
 f = open(outfilename,'w')
 f.write('# list of [args,nbrs,btc] \n')
 f.write('# dictionary : args, links, btc \n')
-f.write(str(data))
+f.write(str(data).replace('],','],\n'))
 f.close()

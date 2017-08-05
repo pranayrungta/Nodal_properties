@@ -4,20 +4,17 @@
 
 int main()
 {
-    vector<int> nRange{100};
+    vector<int> nRange{10,8};
 
 	ofstream f("Star.txt");
-	f<<"[ "<<endl;
+	f<<"[ "<<endl<<endl;
     for(auto n : nRange)
     {
         Star network(n);
-        ostringstream ss;
-        ss<<"{'n':"<<n<<"},";
-
-        f<<"[  "<<ss.str()<<endl;
+        f<<"[  '"<<network.tag()<<"',"<<endl;
         f<<network<<"] ,"<<endl<<endl;
 
-        cout<<"\r "<<ss.str()<<"   "<<flush;
+        cout<<network.tag()<<endl;
     }
     f<<"]";
 }

@@ -1,16 +1,16 @@
-#include "./../Topology/Small_World.cpp"
+#include "./../Small_World.cpp"
 #include<sstream>
 #include<fstream>
 
 int main()
 {
-    vector<int> nRange{81};
+    vector<int> nRange{10,8};
     vector<int> kRange{2};
-    vector<double> pRange{0.3,0.6,0.9};
-    int iniCond = 1;
+    vector<double> pRange{0.3,0.5};
+    int iniCond = 3;
 
 	ofstream f("SWS.txt");
-	f<<"[ "<<endl;
+	f<<"[ "<<endl<<endl;
     for(auto n : nRange)
     for(auto k : kRange)
 	{
@@ -19,15 +19,12 @@ int main()
 		for(int ic=1; ic<=iniCond; ic++)
 		{
 			network.evolve_links(p);
-			ostringstream ss;
-			//ss<<"'SWS"<<"_n="<<n<<"_k="<<k<<"_p="<<p<<"_ic="<<ic<<"' ";
-			ss<<"{'n':"<<n<<", 'k':"<<k<<", 'p':"<<p<<"},  # ic="<<ic;
-
-			f<<"[  "<<ss.str()<<endl;
+			f<<"[  '"<<network.tag()<<"_p="<<p<<"',  # ic="<<ic<<endl;
 			f<<network<<"] ,"<<endl<<endl;
 
-			cout<<"\r "<<ss.str()<<"   "<<flush;
+			cout<<network.tag()<<"\tic="<<ic<<endl;
 		}
+		cout<<endl;
 	}
     f<<"]";
 }

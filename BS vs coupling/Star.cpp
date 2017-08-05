@@ -1,7 +1,7 @@
-#include "./../Topology/common_base.cpp"
-
 #ifndef PARAMETERS
 #define PARAMETERS
+
+#include "./../Topology/common_base.cpp"
 constexpr int positive_well = 1;
 constexpr int negative_well = -1;
 namespace parameter
@@ -24,7 +24,6 @@ namespace parameter
 }
 #endif // PARAMETERS
 
-#include "randomly/star_Processor.cpp"
-//#include "btc/star_Processor.cpp"
-//#include "clc/star_Processor.cpp"
-//#include "degree/star_Processor.cpp"
+//#include "source/randomly.cpp"
+//#include "source/btc_clc.cpp"
+#include "source/degree.cpp"

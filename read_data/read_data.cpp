@@ -5,9 +5,9 @@
 
 struct data_point
 {
-	map<string,int> args;
+	string tag;
 	vector<vector<int>> nbr;
-	multimap<double,int> btc;
+	multimap<double,int> ndpr;
 };
 
 data_point read_data_point(istream& is)
@@ -18,14 +18,16 @@ data_point read_data_point(istream& is)
 	is>>ch;
 	if(ch!='[')wrong_format("read_data_point [");
 
-	is>>temp.args>>ch;
-	if(ch!=',')wrong_format("read_data_point arg,");
+	string s;	is>>s;
+	if( s[0]!='\'' or s[s.size()-2]!='\'' or s.back()!=',' )
+		wrong_format("read_data_point tag,");
+	temp.tag = s.substr(1,s.size()-3);
 
 	temp.nbr = read_topology(is);
 
 	is>>ch;
 	if(ch!=',')wrong_format("read_data_point topology,");
-	is>>temp.btc>>ch;
+	is>>temp.ndpr>>ch;
 
 	if(ch!=']')wrong_format("read_data_point ]");
 	return temp;
@@ -63,16 +65,19 @@ vector<data_point> read_data_from_file(const string& s)
 	}
 }
 
-int main_readData()
+ostream& operator<<(ostream& os, const data_point& i)
 {
-	string s = "dataSample.txt";
+	os<<i.tag<<endl;
+	os<<i.nbr<<endl;
+	os<<i.ndpr<<endl<<endl;
+}
+
+int mainreadData()
+{
+	string s = "btc_RSFsample.txt";
 	vector<data_point> data = read_data_from_file(s);
 	for(auto& i : data)
-	{
-		cout<<i.args<<endl;
-		cout<<i.nbr<<endl;
-		cout<<i.btc<<endl<<endl;
-	}
+		cout<<i;
 }
 
 #endif

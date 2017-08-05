@@ -1,5 +1,5 @@
-filename = 'data/RSF_k=2_ic=100.txt'
-outfilename = 'data/clc_RSF_k=2_ic=100.txt'
+filename = 'RSFsample.txt'
+outfilename = 'clc_'+filename
 
 data = eval( open(filename,'r').read() )
 

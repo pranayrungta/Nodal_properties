@@ -4,24 +4,17 @@
 
 int main()
 {
-    vector<int> orderRange{3,4};
+    vector<int> orderRange{2,3};
 
 	ofstream f("DSF.txt");
-	f<<"[ "<<endl;
+	f<<"[ "<<endl<<endl;
     for(auto order : orderRange)
     {
         DSF network(order);
-        ostringstream ss;
-        //ss<<"'order="<<order<<"' ";
-        ss<<"{ 'order':"<<order<<"},";
+        f<<"[  '"<<network.tag()<<"',"<<endl;
+        f<<network<<"] ,"<<endl<<endl;
 
-        f<<"[  "<<ss.str()<<endl;
-        f<<network<<","<<endl;
-        //f<<"# degree distribution"<<endl;
-        //f<<getDegreeDistribution(network);
-        f<<"] ,"<<endl<<endl;
-
-        cout<<"\r "<<ss.str()<<"   "<<flush;
+        cout<<network.tag()<<endl;
     }
     f<<"]";
 }

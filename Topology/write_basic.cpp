@@ -24,10 +24,32 @@ ostream& write_map(ostream& os, const map<T1,T2>& var,
     }
 	return os<<ending;
 }
-
 template<typename t1,typename t2>
 ostream& operator<<(ostream& os, const map<t1,t2>& x)
 {	return write_map(os,x,"","","\t","\n");	}
+
+
+template<typename T1, typename T2>
+ostream& write_multimap(ostream& os, const multimap<T1,T2>& var,
+				   const string start="{\n",
+				   const string ending = "\n}",
+				   const string key_val_sep = " : ",
+				   const string elem_sep = ",\n"
+				  )
+{
+	os<<start;
+    if(var.size()>0)
+    {
+    	auto i = var.begin();
+        os<<(*i).first<<key_val_sep<<(*i).second;
+        for(i++; i!=var.end(); i++)
+			os<<elem_sep<<(*i).first<<key_val_sep<<(*i).second;
+    }
+	return os<<ending;
+}
+template<typename t1,typename t2>
+ostream& operator<<(ostream& os, const multimap<t1,t2>& x)
+{	return write_multimap(os,x,"","","\t","\n");	}
 
 
 template<typename T>

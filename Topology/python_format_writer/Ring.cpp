@@ -4,24 +4,20 @@
 
 int main()
 {
-    vector<int> nRange{100};
-    vector<int> kRange{2};
+    vector<int> nRange{8,10};
+    vector<int> kRange{2,4};
 
 
 	ofstream f("Ring.txt");
-	f<<"[ "<<endl;
+	f<<"[ "<<endl<<endl;
     for(auto n : nRange)
     for(auto k : kRange)
     {
         Ring network(n,k);
-        ostringstream ss;
-        //ss<<"'Ring"<<"_n="<<n<<"_k="<<k<<"' ";
-        ss<<"{'n':"<<n<<", 'k':"<<k<<"},";
-
-        f<<"[  "<<ss.str()<<endl;
+        f<<"[  '"<<network.tag()<<"',"<<endl;
         f<<network<<"] ,"<<endl<<endl;
 
-        cout<<"\r "<<ss.str()<<"   "<<flush;
+        cout<<network.tag()<<endl;
     }
     f<<"]";
 }
