@@ -31,7 +31,7 @@ namespace parameter
 class Spacetime : protected Dynamics
 {public:
 	/// calculates basin stability for a fixed configuration and different initial conditions
-	void spt_highest_one_config(ostream& os,const double& c, const data_point& dp)
+	void spt_highest_one_config(ostream& os,const double& c, const data_point& dp, const int pc)
 	{using parameter::transients;
 	using  parameter::dt;
 		if(dp.nbr.size()!=x.size())
@@ -39,7 +39,7 @@ class Spacetime : protected Dynamics
 			x.resize(dp.nbr.size());
 			Dx.resize(dp.nbr.size());
 		}
-		auto highest_btc_Nodes = samplehighest(dp.btc);
+		auto highest_btc_Nodes = samplehighest(dp.ndpr,pc);
 
 		os<<"time\\nodes";
 		for(int i=0; i<x.size(); i++)
@@ -59,7 +59,7 @@ class Spacetime : protected Dynamics
 	}
 
 
-	void spt_lowest_one_config(ostream& os, const double& c, const data_point& dp)
+	void spt_lowest_one_config(ostream& os, const double& c, const data_point& dp, const int pc)
 	{using parameter::transients;
 	using  parameter::dt;
 		if(dp.nbr.size()!=x.size())
@@ -67,7 +67,7 @@ class Spacetime : protected Dynamics
 			x.resize(dp.nbr.size());
 			Dx.resize(dp.nbr.size());
 		}
-		auto lowest_btc_Nodes = samplelowest(dp.btc);
+		auto lowest_btc_Nodes = samplelowest(dp.ndpr,pc);
 
 		os<<"time\\nodes";
 		for(int i=0; i<x.size(); i++)

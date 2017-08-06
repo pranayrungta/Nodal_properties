@@ -8,7 +8,7 @@ namespace parameter
 {
     const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9} ;
 
-    constexpr int perturbCount = 10;
+    vector<int> perturbCountRange{10};
     constexpr int repetitions =100 ;
 
     constexpr double transients = 100;
@@ -29,7 +29,7 @@ namespace parameter
 class Dynamics : public Dynamics_base
 {public:
 	/// calculates basin stability for a fixed configuration and different initial conditions
-	double recTime_highest_one_config(const double& c, const data_point& dp)
+	double recTime_one_config(const double& c, const data_point& dp, const vector<int>& perturbNodes )
 	{using parameter::repetitions;
 	using parameter::transients;
 	using  parameter::dt;
@@ -38,44 +38,27 @@ class Dynamics : public Dynamics_base
 			x.resize(dp.nbr.size());
 			Dx.resize(dp.nbr.size());
 		}
-		auto highest_btc_Nodes = samplehighest(dp.btc);
 
+		double avg_rec_time=0;
 		for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)
 		{
-			fnode_BS_initialize(highest_btc_Nodes);
+			fnode_BS_initialize(perturbNodes);
+			double rec_time=0;
 			for(double t=0; t<transients; t+=dt)
 			{
 				evolveNodes(c,dp.nbr);
 				if(syncWell()==parameter::initial_well)
-					return t;
+				{
+					rec_time=t;
+					break;
+				}
 			}
+			if(rec_time==0)
+				rec_time=transients;
+			avg_rec_time+=rec_time;
 		}
-		return transients;
-	}
-
-
-	double recTime_lowest_one_config(const double& c, const data_point& dp)
-	{using parameter::repetitions;
-	using parameter::transients;
-	using  parameter::dt;
-		if(dp.nbr.size()!=x.size())
-		{
-			x.resize(dp.nbr.size());
-			Dx.resize(dp.nbr.size());
-		}
-		auto lowest_btc_Nodes = samplelowest(dp.btc);
-
-		for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)
-		{
-			fnode_BS_initialize( lowest_btc_Nodes );
-			for(double t=0; t<transients; t+=dt)
-			{
-				evolveNodes(c,dp.nbr);
-				if(syncWell()==parameter::initial_well)
-					return t;
-			}
-		}
-		return transients;
+		avg_rec_time/=repetitions;
+		return avg_rec_time;
 	}
 };
 

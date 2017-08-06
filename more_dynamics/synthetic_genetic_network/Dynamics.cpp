@@ -7,7 +7,6 @@ constexpr double negative_well = 0.19;
 constexpr double mid_well = 0.77;
 namespace parameter
 {
-    constexpr int perturbCount = 10;
     constexpr int repetitions=100;
 
     constexpr double dt = 0.01;
@@ -48,15 +47,15 @@ class Dynamics
     double syncWell();
     void evolveNodes(const double c,const vector<vector<int>>& network);
 
-	vector<int> samplehighest(const multimap<double,int>& btc);
-	vector<int> samplelowest(const multimap<double,int>& btc);
+	vector<int> samplehighest(const multimap<double,int>& ndpr, const int perturbCount);
+	vector<int> samplelowest(const multimap<double,int>& ndpr, const int perturbCount);
 
     constexpr static double unsync = mid_well;
 
 	/// calculates basin stability for a fixed configuration and different initial conditions
-	double BShighest_one_config(const double& c, const data_point& dp);
+	double BShighest_one_config(const double& c, const data_point& dp, const int perturbCount);
 
-	double BSlowest_one_config(const double& c, const data_point& dp);
+	double BSlowest_one_config(const double& c, const data_point& dp, const int perturbCount);
 };
 
 
@@ -124,15 +123,15 @@ void Dynamics::evolveNodes(const double c,const vector<vector<int>>& network)
 
 
 
-vector<int> Dynamics::samplehighest(const multimap<double,int>& btc)
-{using parameter::perturbCount;
-	if(btc.size()<perturbCount)
+vector<int> Dynamics::samplehighest(const multimap<double,int>& ndpr, const int perturbCount)
+{
+	if(ndpr.size()<perturbCount)
 	{
 		cout<<"multimap has less elements than requested"<<endl;
 		exit(1);
 	}
 	vector<int> values(perturbCount);
-	auto highest = btc.end();
+	auto highest = ndpr.end();
 	for(int i=0; i<perturbCount; i++)
 	{
 		highest--;
@@ -141,15 +140,15 @@ vector<int> Dynamics::samplehighest(const multimap<double,int>& btc)
 	return values;
 }
 
-vector<int> Dynamics::samplelowest(const multimap<double,int>& btc)
-{using parameter::perturbCount;
-	if(btc.size()<perturbCount)
+vector<int> Dynamics::samplelowest(const multimap<double,int>& ndpr, const int perturbCount)
+{
+	if(ndpr.size()<perturbCount)
 	{
 		cout<<"multimap has less elements than requested"<<endl;
 		exit(1);
 	}
 	vector<int> values(perturbCount);
-	auto lowest = btc.begin();
+	auto lowest = ndpr.begin();
 	for(int i=0; i<perturbCount; i++)
 	{
 		values[i] = (*lowest).second;
@@ -160,7 +159,7 @@ vector<int> Dynamics::samplelowest(const multimap<double,int>& btc)
 
 
 /// calculates basin stability for a fixed configuration and different initial conditions
-double Dynamics::BShighest_one_config(const double& c, const data_point& dp)
+double Dynamics::BShighest_one_config(const double& c, const data_point& dp, const int perturbCount)
 {using parameter::repetitions;
 using parameter::transients;
 using  parameter::dt;
@@ -169,7 +168,7 @@ using  parameter::dt;
 		x.resize(dp.nbr.size());
 		Dx.resize(dp.nbr.size());
 	}
-	auto highest_btc_Nodes = samplehighest(dp.btc);
+	auto highest_btc_Nodes = samplehighest(dp.ndpr,perturbCount);
 
 	double BShighest = 0;
 	for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)
@@ -185,7 +184,7 @@ using  parameter::dt;
 }
 
 
-double Dynamics::BSlowest_one_config(const double& c, const data_point& dp)
+double Dynamics::BSlowest_one_config(const double& c, const data_point& dp, const int perturbCount)
 {using parameter::repetitions;
 using parameter::transients;
 using  parameter::dt;
@@ -194,7 +193,7 @@ using  parameter::dt;
 		x.resize(dp.nbr.size());
 		Dx.resize(dp.nbr.size());
 	}
-	auto lowest_btc_Nodes = samplelowest(dp.btc);
+	auto lowest_btc_Nodes = samplelowest(dp.ndpr,perturbCount);
 
 	double BSlowest = 0;
 	for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)

@@ -11,8 +11,8 @@ namespace parameter
 	string datafile = "./../../../Betweeness centrality/data/btc_Star.txt";
 
     const vector<double> cRange {0.9,1.0,1.1} ;
+    const vector<int> perturbCountRange{1};
 
-    constexpr int perturbCount = 1;
     constexpr int repetitions=-1;// not required here
 
     constexpr double transients = 20;
@@ -34,32 +34,30 @@ namespace parameter
 int main()
 {using parameter::cRange;
 using parameter::datafile;
-using parameter::perturbCount;
+using parameter::perturbCountRange;
 
 	const vector<data_point> data = read_data_from_file(datafile);
 	Spacetime analyser;
 
 	///-------processing------
+	for(const int pc : perturbCountRange)
     for(auto& dp : data)
+	for(auto c : cRange)
 	{
-		auto& arg = dp.args;
-		for(auto c : cRange)
-		{
-			auto seed=time(NULL);
+		auto seed=time(NULL);
 
-			ostringstream ssh;
-			ssh<<"Star_n="<<arg.at("n")<<"_c="<<c<<"_h_pc="<<perturbCount;
-			ofstream fh(ssh.str()+".spt");
-			generator.seed(seed);
-			analyser.spt_highest_one_config(fh,c,dp);
+		ostringstream ssh;
+		ssh<<dp.tag<<"_c="<<c<<"_h_pc="<<pc;
+		ofstream fh(ssh.str()+".spt");
+		generator.seed(seed);
+		analyser.spt_highest_one_config(fh,c,dp,pc);
 
-//			ostringstream ssl;
-//			ssl<<"Star_n="<<arg.at("n")<<"_c="<<c<<"_l_pc="<<perturbCount;
-//			ofstream fl(ssl.str()+".spt");
-//			generator.seed(seed);
-//			analyser.spt_lowest_one_config(fl,c,dp);
+//		ostringstream ssl;
+//		ssl<<dp.tag<<"_c="<<c<<"_l_pc="<<pc;
+//		ofstream fl(ssl.str()+".spt");
+//		generator.seed(seed);
+//		analyser.spt_lowest_one_config(fl,c,dp,pc);
 
-			cout<<"n="<<arg.at("n")<<" c="<<c<<"  "<<endl;
-		}
+		cout<<dp.tag<<" c="<<c<<"  "<<endl;
 	}
 }

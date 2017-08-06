@@ -15,8 +15,8 @@ int main()
 	double total_count=0;
 	for(auto& dp : data)
 	{
-		auto& btc = dp.btc;
-		for(auto& i : btc)
+		auto& ndpr = dp.ndpr;
+		for(auto& i : ndpr)
 		{
 			frequency[i.first]++;
 			total_count++;

@@ -6,7 +6,7 @@ constexpr double positive_well = 1;
 constexpr double negative_well = -1;
 namespace parameter
 {
-	string datafile = "dataSample.txt";
+	string datafile = "./../btc_RSFsample.txt";
 
     const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9} ;
     const vector<int> perturbCountRange {1} ;
@@ -26,33 +26,31 @@ namespace parameter
 
 
 
-#include "./../../read_data/read_data.cpp"
-#include "./../../Dynamics_base.cpp"
-#include<unordered_set>
+#include "btc_clc_degree.cpp"
 
-class Processor
+class Degree:public Processor
 {public:
 
-	Processor(const string filename);
+	Degree(const string filename):
+		Processor(filename){};
 
-	void openfiles(const int pc);
+	void calculteBS(const int pc, const double c)override
+	{
+		BSh.clear();
+		BSl.clear();
+		for(auto& dp : data)
+		{
+			vector<int> perturbNodes = analyser.highest_degree(dp.nbr,pc);
+			BSh[dp.tag] += analyser.BS_one_config(c,dp,perturbNodes);
+			perturbNodes= analyser.lowest_degree(dp.nbr,pc);
+			BSl[dp.tag] += analyser.BS_one_config(c,dp,perturbNodes);
+		}
 
-	void write_to_file(const int pc,double c);
-
-	void closefiles();
-
-private:
-	const vector<data_point> data;
-	unordered_set<string> unique_tags;
-	map<string,int> count_config;
-
-	Dynamics_base analyser;
-	map<string,double> BSh;
-	map<string,double> BSl;
-	map<string,ofstream*> filesh;
-	map<string,ofstream*> filesl;
-
-	void calculteBS(const int pc, const double c);
+		for(auto& i: BSh)
+			i.second /= count_config[i.first];
+		for(auto& i: BSl)
+			i.second /= count_config[i.first];
+	}
 };
 
 
@@ -61,7 +59,7 @@ private:
 int main()
 {using namespace parameter;
 
-	Processor process(datafile);
+	Degree process(datafile);
 	for(const int pc : perturbCountRange)
 	{
 		process.openfiles(pc);
@@ -69,79 +67,4 @@ int main()
 			process.write_to_file(pc,c);
 		process.closefiles();
 	}
-}
-
-
-
-///--------------implementation of class functions------------
-Processor::Processor(const string filename):
-	data( read_data_from_file(filename) )
-{
-	for(auto& dp: data)
-	{
-		unique_tags.insert(dp.tag);
-		count_config[dp.tag]++;
-	}
-}
-
-void Processor::calculteBS(int pc,double c)
-{
-	BSh.clear();
-	BSl.clear();
-	for(auto& dp : data)
-	{
-		vector<int> perturbNodes = analyser.highest_degree(dp.nbr,pc);
-		BSh[dp.tag] += analyser.BS_one_config(c,dp,perturbNodes);
-		perturbNodes= analyser.lowest_degree(dp.nbr,pc);
-		BSl[dp.tag] += analyser.BS_one_config(c,dp,perturbNodes);
-	}
-
-	for(auto& i: BSh)
-		i.second /= count_config[i.first];
-	for(auto& i: BSl)
-		i.second /= count_config[i.first];
-}
-
-void Processor::openfiles(int pc)
-{
-	for(auto& tag:unique_tags)
-	{
-		ostringstream ssh;
-		ostringstream ssl;
-
-		ssh<<tag<<"_h_pc="<<pc<<".txt";
-		ssl<<tag<<"_l_pc="<<pc<<".txt";
-
-		filesh[tag]= new ofstream(ssh.str());
-		filesl[tag]= new ofstream(ssl.str());
-
-		(*filesh[tag])<<"#coupling"<<"\t"<<"BShighest"<<endl;
-		(*filesl[tag])<<"#coupling"<<"\t"<<"BSlowest"<<endl;
-	}
-}
-
-void Processor::write_to_file(int pc,double c)
-{
-	calculteBS(pc,c);
-	for(auto& tag:unique_tags)
-	{
-		(*filesh[tag])<<c<<"\t"<<BSh[tag]<<endl;
-		(*filesl[tag])<<c<<"\t"<<BSl[tag]<<endl;
-	}
-}
-
-void Processor::closefiles()
-{
-	for(auto& i : filesh)
-	{
-		(i.second)->close();
-		delete i.second;
-	}
-	for(auto& i : filesl)
-	{
-		(i.second)->close();
-		delete i.second;
-	}
-	filesh.clear();
-	filesl.clear();
 }
