@@ -6,10 +6,12 @@ constexpr int positive_well = 1;
 constexpr int negative_well = -1;
 namespace parameter
 {
-	const string datafile = "./../../Network Properties/data/btc_Ring_n=100_k=2.txt";
+	const string datafile = "./../../Network Properties/data/btc_RSF_n=100_k=1_ic=100.txt";
 
-    const vector<double> cRange {0.7, 0.6, 0.5, 0.8, 0.9, 0.1} ;
-    const vector<int> perturbCountRange{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    const vector<double> cRange {0.1, 0.3, 0.5, 1.0, 1.5, 2.0} ;
+    const vector<int> perturbCountRange{1, 2, 3, 4, 5, 6, 7, 8, 9,
+			10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+
     constexpr int repetitions=100;
 
     constexpr double transients = 100;

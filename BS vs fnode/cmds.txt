@@ -1,0 +1,28 @@
+echo 
+echo "Submitting jobs..."
+echo 
+
+echo "Compiling Program 1 : Ring.cpp " 
+g++ -std=c++11 Ring.cpp -o Ring.run 
+qsub -o Ring.out -e Ring.out -V -b y -cwd ./Ring.run  
+echo " " 
+
+echo "Compiling Program 2 : RSF_k=1.cpp " 
+g++ -std=c++11 RSF_k=1.cpp -o RSF_k=1.run 
+qsub -o RSF_k=1.out -e RSF_k=1.out -V -b y -cwd ./RSF_k=1.run  
+echo " " 
+
+echo "Compiling Program 3 : RSF_k=2.cpp " 
+g++ -std=c++11 RSF_k=2.cpp -o RSF_k=2.run 
+qsub -o RSF_k=2.out -e RSF_k=2.out -V -b y -cwd ./RSF_k=2.run  
+echo " " 
+
+echo "Compiling Program 4 : Star.cpp " 
+g++ -std=c++11 Star.cpp -o Star.run 
+qsub -o Star.out -e Star.out -V -b y -cwd ./Star.run  
+echo " " 
+
+
+echo
+echo "Done!!!" 
+echo
