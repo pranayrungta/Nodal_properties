@@ -42,20 +42,24 @@ using parameter::perturbCountRange;
 	for(const double c : cRange)
     for(auto& dp:data)
 	{
-		ostringstream ssh;
-		ostringstream ssl;
-		ssh<<dp.tag<<"_c="<<c<<"_h_pc="<<pc;
-		ssl<<dp.tag<<"_c="<<c<<"_l_pc="<<pc;
+		auto seed=time(NULL);
 
+		ostringstream ssh;
+		ssh<<dp.tag<<"_c="<<c<<"_h_pc="<<pc;
 		ofstream fh(ssh.str()+".spt");
+
+		generator.seed(seed);
+		vector<int> perturbNodes= analyser.samplehighest(dp.ndpr,pc);
+		analyser.spt_one_config(fh,c,dp,perturbNodes);
+
+
+		ostringstream ssl;
+		ssl<<dp.tag<<"_c="<<c<<"_l_pc="<<pc;
 		ofstream fl(ssl.str()+".spt");
 
-		auto seed=time(NULL);
 		generator.seed(seed);
-		analyser.spt_highest_one_config(fh,c,dp,pc);
-
-		generator.seed(seed);
-		analyser.spt_lowest_one_config(fl,c,dp,pc);
+		perturbNodes= analyser.samplelowest(dp.ndpr,pc);
+		analyser.spt_one_config(fl,c,dp,perturbNodes);
 
 		cout<<"\r  "<<dp.tag<<" c="<<c<<"  "<<flush;
 	}

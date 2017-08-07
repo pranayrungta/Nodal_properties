@@ -24,11 +24,14 @@ namespace parameter
 #endif // PARAMETERS
 
 
+
+
+
+
 #include "./../../Dynamics_base.cpp"
 
 class Dynamics : public Dynamics_base
 {public:
-	/// calculates basin stability for a fixed configuration and different initial conditions
 	double recTime_one_config(const double& c, const data_point& dp, const vector<int>& perturbNodes )
 	{using parameter::repetitions;
 	using parameter::transients;
@@ -61,4 +64,3 @@ class Dynamics : public Dynamics_base
 		return avg_rec_time;
 	}
 };
-

@@ -24,6 +24,12 @@ namespace parameter
 
 #endif
 
+
+
+
+
+
+
 #include "spacetime.cpp"
 #include<sstream>
 
@@ -44,7 +50,8 @@ using parameter::perturbCountRange;
 		ss<<dp.tag<<"_c="<<c<<"_pc="<<pc;
 
 		ofstream f(ss.str()+".spt");
-		analyser.spt_lowest_one_config(f,c,dp,pc);
+		vector<int> perturbNodes= analyser.samplehighest(dp.ndpr,pc);
+		analyser.spt_one_config(f,c,dp,perturbNodes);
 
 		cout<<"\r  "<<dp.tag<<" c="<<c<<"  "<<flush;
 	}

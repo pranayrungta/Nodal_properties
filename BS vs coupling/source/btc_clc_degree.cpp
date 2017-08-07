@@ -30,6 +30,7 @@ namespace parameter
 #include "./../../read_data/read_data.cpp"
 #include "./../../Dynamics_base.cpp"
 #include<unordered_set>
+#include<unordered_map>
 
 class Processor
 {public:
@@ -45,16 +46,23 @@ class Processor
 protected:
 	const vector<data_point> data;
 	unordered_set<string> unique_tags;
-	map<string,int> count_config;
+	unordered_map<string,int> count_config;
 
 	Dynamics_base analyser;
-	map<string,double> BSh;
-	map<string,double> BSl;
-	map<string,ofstream*> filesh;
-	map<string,ofstream*> filesl;
+	unordered_map<string,double> BSh;
+	unordered_map<string,double> BSl;
+	unordered_map<string,ofstream*> filesh;
+	unordered_map<string,ofstream*> filesl;
 
 	virtual void calculteBS(const int pc, const double c);
 };
+
+
+
+
+
+
+
 
 
 

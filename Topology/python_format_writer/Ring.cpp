@@ -4,8 +4,8 @@
 
 int main()
 {
-    vector<int> nRange{8,10};
-    vector<int> kRange{2,4};
+    vector<int> nRange{100};
+    vector<int> kRange{2};
 
 
 	ofstream f("Ring.txt");

@@ -74,7 +74,7 @@ ostream& operator<<(ostream& os, const data_point& i)
 
 int mainreadData()
 {
-	string s = "btc_RSFsample.txt";
+	string s = "clc_RSFsample.txt";
 	vector<data_point> data = read_data_from_file(s);
 	for(auto& i : data)
 		cout<<i;

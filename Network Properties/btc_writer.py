@@ -1,7 +1,8 @@
-filename = 'RSFsample.txt'
-outfilename = 'btc_'+filename
+source = './../../Network Properties/data/'
+filename = 'Star_n=100.txt'
+outfilename = source+'btc_'+filename
 
-data = eval( open(filename,'r').read() )
+data = eval( open(source+filename,'r').read() )
 
 import networkx as nx
 def netx_graph(connections):
@@ -12,14 +13,14 @@ def netx_graph(connections):
     return G
 
 
-for i,(args,links) in enumerate(data):
-    print args
+for i,(tag,links) in enumerate(data):
+    print i,tag
     graph = netx_graph(links)
     btc = nx.betweenness_centrality(graph)
     data[i].append(btc)
 
-f = open(outfilename,'w')
-f.write('# list of [args,nbrs,btc] \n')
-f.write('# dictionary : args, links, btc \n')
-f.write(str(data).replace('],','],\n'))
-f.close()
+import pprint
+with open(outfilename,'w') as f:
+    f.write('# list of [ tag, nbrs, btc ] \n')
+    pp = pprint.PrettyPrinter(indent=4,stream=f)
+    pp.pprint(data)

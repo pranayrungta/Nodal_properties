@@ -4,7 +4,7 @@
 
 int main()
 {
-    vector<int> nRange{10,8};
+    vector<int> nRange{100};
 
 	ofstream f("Star.txt");
 	f<<"[ "<<endl<<endl;

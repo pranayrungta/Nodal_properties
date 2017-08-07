@@ -8,100 +8,59 @@ class Small_World : public topology_base
 {public:
 
     Small_World(const int n, const int k):
-    	topology_base( vector<vector<int>>(n,vector<int>(k)) ),
-    	isRandom(n)
+    	topology_base( vector<vector<int>>(n,vector<int>(k)) )
     {}
 
     //function to evolve links
-    void evolve_links(const double p);
+    void evolve_links(const double p_)
+    {
+		p=p_;
+		int n=nbr.size();
+		int k=nbr[0].size();
+		int k_left= k/2;
+		int k_right= (k%2==0)?k/2: k/2+1;
 
-    bool isRand(const int i) const
-    {   return isRandom[i];    }
+		static uniform_real_distribution<double>  probability_distribution(0, 1);
+		for(int i=0; i<n; i++)
+		{
+			if( probability_distribution(generator) < p )
+				nbr[i] = sample(0,n-1,k,i); /// random neighbors
+			else
+			{   ///regular neighbors
+				int c=0;
+				for(int j=-k_left; j<=k_right; j++)
+				{
+					if(j==0)continue;
+					nbr[i][c]=(n+i+j)%n ;
+					c++;
+				}
+			}
+		}
+	}
 
-	ostream& display(ostream& os)const override;
-
-	string tag(string swtype="S")
+	string tag(const string swtype="S")
 	{
 		ostringstream ss;
-		ss<<"SW"<<swtype<<"_n="<<nbr.size()<<"_k="<<nbr.back().size();
+		ss<<"SW"<<swtype<<"_n="<<nbr.size()
+		  <<"_k="<<nbr.back().size()<<"_p="<<p;
 		return ss.str();
 	}
 private:
-    vector<bool> isRandom ;
+	double p=0;
 };
 
 
 
 int mainSW()
 {
-    Small_World s(10,4);
-    s.evolve_links(0.5);
+    Small_World s(10,5);
+    s.evolve_links(0.3);
 
-    cout<<"Node 0 "<<s[0]<<endl;
-    cout<<"one neighbor : "<<s[0][1]<<endl;
-	cout<<endl;
-	cout<<s;
+	cout<<s.tag()<<endl;
+	cout<<s<<endl;
 	cout<<"size = "<<s.size()<<endl;
 
-	cout<<s.tag();
 	return 0;
-}
-
-
-
-
-
-
-
-
-///------------implementation of class functions----------------
-
-//function to evolve links
-void Small_World:: evolve_links(const double p)
-{
-    int n=nbr.size();
-    int k=nbr[0].size();
-    int k_left= k/2;
-    int k_right= (k%2==0)?k/2: k/2+1;
-
-    uniform_real_distribution<double>  probability_distribution(0, 1);
-    float r=0;
-    for(int i=0; i<n; i++)
-    {
-        r=probability_distribution(generator) ;
-        if(p<r)
-        {   //regular neighbors
-            int j=0, c=0;
-            for(j=-k_left;j<0; j++)
-            {
-                nbr[i][c]=(n+i+j)%n ;
-                c++;
-            }
-            for(j=1;j<=k_right; j++)
-            {
-                nbr[i][c]=(n+i+j)%n ;
-                c++;
-            }
-            isRandom[i]=0;
-        }
-        else
-        {   //random neighbors
-            nbr[i] = sample(0,n-1,k,i);
-            isRandom[i] = 1;
-        }
-    }
-}
-
-ostream& Small_World::display(ostream& os)const
-{
-	os<<"{#  Node"<<"  "<<"nbrs"<<endl;
-	for(int i=0; i<nbr.size(); i++)
-	{
-		os<<"    "<<i<< "  :  "<<nbr[i]<<" ,";
-		if(isRandom[i])	os<< "  # random"<<endl;
-		else os<< "  # regular"<<endl;
-	}
-	return os<<"}";
 }
 
 
