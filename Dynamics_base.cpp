@@ -161,7 +161,7 @@ vector<int> Dynamics_base::highest_degree(const vector<vector<int>>& nbrs, int p
 		exit(1);
 	}
 
-	multimap<double,int> degree_node;
+	multimap<int,int> degree_node;
 	for(int i=0; i<nbrs.size(); i++)
 		degree_node.insert( pair<int,int>(nbrs[i].size(),i) );
 
@@ -183,7 +183,7 @@ vector<int> Dynamics_base::lowest_degree(const vector<vector<int>>& nbrs, int pe
 		exit(1);
 	}
 
-	multimap<double,int> degree_node;
+	multimap<int,int> degree_node;
 	for(int i=0; i<nbrs.size(); i++)
 		degree_node.insert( pair<int,int>(nbrs[i].size(),i) );
 

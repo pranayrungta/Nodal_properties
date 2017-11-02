@@ -1,19 +1,19 @@
 criteria = ['.spt','']
 
-output = 'png' # 'show' 'png' 'pdf' 'eps'
+title = 'auto' # 'None'  'auto'  'TITLE'
 
-xlabel = 'auto' # 'auto'
-xRange = 'auto'# [1,50] # 'auto'
+xlabel = ( 'time', {'fontsize':20} )#( 'time', {'fontsize':20} )
+ylabel = ( r'$\langle x \rangle$', {'fontsize':25} ) #( r'$\langle x \rangle$', {'fontsize':25} ) 
 
-ylabel = 'auto'  # 'auto'
-yRange =  'auto'# [1,50] # 'auto'
+xlim={} #{'xmin':1, 'xmax':50}
+ylim={} #{'ymin':1, 'ymax':50}
 
-title = 'auto' # None  'auto'  'title'
-# 'auto' set filename as title
-
-colorRange = [-1.5,1.5] # 'auto'  [0,1]
+colorRange =  dict(vmin=-1.5, vmax=1.5)# dict(vmin=0, vmax=1)
 
 vertical_on_x = True # False  True
+figsize = (10,6)
+
+output = 'png' # 'show' 'png' 'pdf' 'eps'
 
 
 

@@ -109,12 +109,23 @@ void Processor::openfiles(const double c)
 
 void Processor::write_to_file(const int pc, const double c)
 {
-	calculteBS(pc,c);
-	for(auto& tag:unique_tags)
-	{
-		(*filesh[tag])<<pc<<"\t"<<BSh[tag]<<endl;
-		(*filesl[tag])<<pc<<"\t"<<BSl[tag]<<endl;
-	}
+    if(pc==0)
+    {
+        for(auto& tag:unique_tags)
+        {
+            (*filesh[tag])<<pc<<"\t"<<1<<endl;
+            (*filesl[tag])<<pc<<"\t"<<1<<endl;
+        }
+    }
+    else
+    {
+        calculteBS(pc,c);
+        for(auto& tag:unique_tags)
+        {
+            (*filesh[tag])<<pc<<"\t"<<BSh[tag]<<endl;
+            (*filesl[tag])<<pc<<"\t"<<BSl[tag]<<endl;
+        }
+    }
 }
 
 void Processor::closefiles()
