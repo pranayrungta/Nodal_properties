@@ -1,12 +1,11 @@
 #ifndef PARAMETERS ///for testing only
 #define PARAMETERS
-
+  ///#pragma once
 #include "Topology/common_base.cpp"
 #include "read_data/read_data.cpp"
 constexpr int positive_well = 1;
 constexpr int negative_well = -1;
-namespace parameter
-{
+namespace parameter{
 	constexpr int repetitions =2 ;
     constexpr double transients = 3;
     constexpr double dt = 0.01;
@@ -68,11 +67,9 @@ using parameter::perturbRange_final;
 using real_dist = uniform_real_distribution<double>;
 
     static real_dist init_well(initial_well-spread, initial_well+spread);
-    for(int i=0; i<x.size() ; i++)
-    {
+    for(int i=0; i<x.size() ; i++){
         x[i]= init_well(generator) ;
-        Dx[i]=0;
-    }
+        Dx[i]=0;}
 
     static real_dist perturbRange(perturbRange_initial, perturbRange_final);
     for(auto nodeNo : fnodes)
@@ -100,17 +97,14 @@ void Dynamics_base::evolveNodes(const double c,const vector<vector<int>>& networ
     double nf=0;
 
     int i,j;
-    //Calculating derivatives
-    for(i=0; i<n; i++)
-    {
+    ///Calculating derivatives
+    for(i=0; i<n; i++){
         nf=0;
         for( j=0; j<network[i].size(); j++ )
             nf+=x[ network[i][j] ];
         nf /= network[i].size();
-
-        Dx[i] = ( x[i]- x[i]*x[i]*x[i] ) + c*(nf- x[i]) ;
-    }
-    //Evolving nodes
+        Dx[i] = ( x[i]- x[i]*x[i]*x[i] ) + c*(nf- x[i]) ;}
+    ///Evolving nodes
     for( i=0; i<n; i++)
         x[i] += Dx[i] * dt  ;
 }
@@ -119,35 +113,29 @@ void Dynamics_base::evolveNodes(const double c,const vector<vector<int>>& networ
 
 vector<int> Dynamics_base::samplehighest(const multimap<double,int>& ndpr, int perturbCount)
 {
-	if(ndpr.size()<perturbCount)
-	{
+	if(ndpr.size()<perturbCount){
 		cout<<"multimap has less elements than requested"<<endl;
-		exit(1);
-	}
+		exit(1);}
+
 	vector<int> values(perturbCount);
 	auto highest = ndpr.end();
-	for(int i=0; i<perturbCount; i++)
-	{
+	for(int i=0; i<perturbCount; i++){
 		highest--;
-		values[i] = (*highest).second;
-	}
+		values[i] = (*highest).second;}
 	return values;
 }
 
 vector<int> Dynamics_base::samplelowest(const multimap<double,int>& ndpr, int perturbCount)
 {
-	if(ndpr.size()<perturbCount)
-	{
+	if(ndpr.size()<perturbCount){
 		cout<<"multimap has less elements than requested"<<endl;
-		exit(1);
-	}
+		exit(1);}
+
 	vector<int> values(perturbCount);
 	auto lowest = ndpr.begin();
-	for(int i=0; i<perturbCount; i++)
-	{
+	for(int i=0; i<perturbCount; i++){
 		values[i] = (*lowest).second;
-		lowest++;
-	}
+		lowest++;}
 	return values;
 }
 
@@ -155,11 +143,9 @@ vector<int> Dynamics_base::samplelowest(const multimap<double,int>& ndpr, int pe
 
 vector<int> Dynamics_base::highest_degree(const vector<vector<int>>& nbrs, int perturbCount)
 {
-	if(nbrs.size()<perturbCount)
-	{
+	if(nbrs.size()<perturbCount){
 		cout<<"nbr has less elements than requested"<<endl;
-		exit(1);
-	}
+		exit(1);}
 
 	multimap<int,int> degree_node;
 	for(int i=0; i<nbrs.size(); i++)
@@ -167,21 +153,17 @@ vector<int> Dynamics_base::highest_degree(const vector<vector<int>>& nbrs, int p
 
 	vector<int> values(perturbCount);
 	auto highest = degree_node.end();
-	for(int i=0; i<perturbCount; i++)
-	{
+	for(int i=0; i<perturbCount; i++){
 		highest--;
-		values[i] = (*highest).second;
-	}
+		values[i] = (*highest).second;}
 	return values;
 }
 
 vector<int> Dynamics_base::lowest_degree(const vector<vector<int>>& nbrs, int perturbCount)
 {
-	if(nbrs.size()<perturbCount)
-	{
+	if(nbrs.size()<perturbCount){
 		cout<<"nbr has less elements than requested"<<endl;
-		exit(1);
-	}
+		exit(1);}
 
 	multimap<int,int> degree_node;
 	for(int i=0; i<nbrs.size(); i++)
@@ -189,11 +171,9 @@ vector<int> Dynamics_base::lowest_degree(const vector<vector<int>>& nbrs, int pe
 
 	vector<int> values(perturbCount);
 	auto lowest =  degree_node.begin();
-	for(int i=0; i<perturbCount; i++)
-	{
+	for(int i=0; i<perturbCount; i++){
 		values[i] = (*lowest).second;
-		lowest++;
-	}
+		lowest++;}
 	return values;
 }
 
@@ -201,20 +181,16 @@ double Dynamics_base::BS_one_config(const double& c, const data_point& dp, const
 {using parameter::repetitions;
 using parameter::transients;
 using  parameter::dt;
-	if(dp.nbr.size()!=x.size())
-	{
+	if(dp.nbr.size()!=x.size()){
 		x.resize(dp.nbr.size());
-		Dx.resize(dp.nbr.size());
-	}
+		Dx.resize(dp.nbr.size());}
 	double BS= 0;
-	for(int repetitionNo=0; repetitionNo<repetitions; repetitionNo++)
-	{
+	for(int repNo=0; repNo<repetitions; repNo++){
 		fnode_BS_initialize(perturb_nodes);
 		for(double t=0; t<transients; t+=dt)
 			evolveNodes(c,dp.nbr);
 		if(syncWell()==parameter::initial_well)
-			BS++;
-	}
+			BS++;}
 	BS /= repetitions;
 	return BS;
 }

@@ -187,7 +187,8 @@ void RSF::update_cumSize_from(int)
 
 void RSF::add_new_node()
 {
-	initializeSelected();
+	for(int i=0; i<activeNodes; i++)
+		selected[i]=false;
 
 	/// setting variables to calculate from update cumulative inside loop
 	cumSize[0].node=-1;

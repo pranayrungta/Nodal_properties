@@ -6,7 +6,7 @@
 #include "./../../Dynamics_base.cpp"
 #include<unordered_set>
 
-class Processor:protected Dynamics_base
+class Processor : protected Dynamics_base
 {public:
 	Processor(const string filename);
 

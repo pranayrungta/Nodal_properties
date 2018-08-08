@@ -6,11 +6,10 @@ constexpr int positive_well = 1;
 constexpr int negative_well = -1;
 namespace parameter
 {
-	const string datafile = "btc_RSF_ic=50.txt";
+	const string datafile = "./../../Network Properties/data/btc_RSF_n=100_k=2_ic=100.txt";
 
-    const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,
-                                 1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8} ;
-    const vector<int> perturbCountRange{1};
+    const vector<double> cRange {0.25} ;
+    const vector<int> perturbCountRange{20};
 
     constexpr int repetitions=100;
 
@@ -26,5 +25,5 @@ namespace parameter
 #endif // PARAMETERS
 
 //#include "source/randomly.cpp"
-//#include "source/btc_clc.cpp"
-#include "source/degree.cpp"
+#include "source/btc_clc.cpp"
+//#include "source/degree.cpp"

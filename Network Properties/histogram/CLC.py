@@ -1,17 +1,17 @@
 bins = 20
 
-
 source = './../../../Network Properties/data/'
-fileData = [('RSF_n=100_k=1_ic=100.txt', 'm=1'),
-            ('RSF_n=100_k=2_ic=100.txt', 'm=2'),]
-outfile = './../../../Network Properties/probability/deg_RSF_n=100_m=1,2_ic=100'
+fileData = [('clc_RSF_n=100_k=1_ic=100.txt', 'm=1'),
+            ('clc_RSF_n=100_k=2_ic=100.txt', 'm=2'),]
+outfile = './../../../Network Properties/probability/clc_RSF_n=100_m=1,2_ic=100'
 
-xlabel = ('Degree', dict(fontsize=18) )
+xlabel = ('Closeness Centrality', dict(fontsize=18) )
 ylabel = ('Probablility', dict(fontsize=18) )
-title = 'RSF n=100 m=1,2 ic=100'
+title = 'RSF n=100 m=1 ic=100'
 
 log = 'y' # 'x' 'y' 'xy'
 output = 'show' #'show' 'eps' 'png'
+
 
 
 
@@ -28,9 +28,8 @@ labels=[];weights=[]; data=[]
 for filename,label in fileData:
     fileData = eval( open(source+filename,'r').read() )
     prop = []
-    for tag,links in fileData:
-        for nbrs in links.values():
-            prop+=[len(nbrs)]
+    for tag,links,propi in fileData:
+        prop += propi.values()
     prop_weights = np.ones(len(prop))/len(prop)
     
     data += [prop]

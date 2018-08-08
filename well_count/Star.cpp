@@ -1,4 +1,3 @@
-#ifndef PARAMETERS
 #define PARAMETERS
 
 #include "./../Topology/common_base.cpp"
@@ -11,7 +10,6 @@ namespace parameter
     const vector<double> cRange {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,
                                  1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8} ;
     const vector<int> perturbCountRange{1};
-
     constexpr int repetitions=100;
 
     constexpr double transients = 50;
@@ -22,7 +20,6 @@ namespace parameter
     constexpr double perturbRange_initial = 0;
     constexpr double perturbRange_final = 5;
 }
-#endif // PARAMETERS
 
 //#include "source/randomly.cpp"
 //#include "source/btc_clc.cpp"

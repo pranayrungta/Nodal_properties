@@ -1,4 +1,3 @@
-#ifndef PARAMETERS ///for testing only
 #define PARAMETERS
 
 #include "./../Topology/common_base.cpp"
@@ -21,8 +20,6 @@ namespace parameter
     constexpr double perturbRange_initial = 0;
     constexpr double perturbRange_final = 5;
 }
-
-#endif // PARAMETERS
 
 //#include "source/randomly.cpp"
 //#include "source/btc_clc.cpp"

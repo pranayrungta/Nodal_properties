@@ -5,8 +5,8 @@ source = './../../../Network Properties/data/'
 filename = 'btc_RSF_n=100_k=2_ic=100.txt'
 outfile = './../../../Network Properties/probability/hist_'+filename[:-4]
 
-xlabel = ('Betweeness Centrality', {'fontsize':18})
-ylabel = ('Probablility',{'fontsize':18}) # 
+xlabel = ('Betweeness Centrality', dict(fontsize=18) )
+ylabel = ('Probablility', dict(fontsize=18) )
 title = ' '.join(filename[:-4].split('_'))
 
 output = 'show' #'show' 'eps' 'png'

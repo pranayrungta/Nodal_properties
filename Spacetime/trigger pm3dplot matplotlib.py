@@ -2,8 +2,8 @@ criteria = ['.spt','']
 
 title = 'auto' # 'None'  'auto'  'TITLE'
 
-xlabel = ( 'time', {'fontsize':20} )#( 'time', {'fontsize':20} )
-ylabel = ( r'$\langle x \rangle$', {'fontsize':25} ) #( r'$\langle x \rangle$', {'fontsize':25} ) 
+xlabel = ( 'time', dict(fontsize=18) )
+ylabel = ( r'$\langle x \rangle$', dict(fontsize=23) )
 
 xlim={} #{'xmin':1, 'xmax':50}
 ylim={} #{'ymin':1, 'ymax':50}

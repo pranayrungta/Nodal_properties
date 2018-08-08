@@ -4,10 +4,10 @@
 
 int main()
 {
-    vector<int> nRange{10,8};
+    vector<int> nRange{20};
     vector<int> kRange{2};
-    vector<double> pRange{0.3,0.5};
-    int iniCond = 3;
+    vector<double> pRange{0.3};
+    int iniCond = 7;
 
 	ofstream f("SWS.txt");
 	f<<"[ "<<endl<<endl;

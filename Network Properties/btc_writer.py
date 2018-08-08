@@ -1,5 +1,5 @@
-source = './../../Network Properties/data/'
-filename = 'RSF_n=50_k=1_ic=100.txt'
+source = './'
+filename = 'Ring_n=400,800.txt'
 outfilename = source+'btc_'+filename
 
 data = eval( open(source+filename,'r').read() )
@@ -7,13 +7,13 @@ data = eval( open(source+filename,'r').read() )
 import networkx as nx
 def netx_graph(connections):
     G=nx.Graph()
-    for start,links in connections.iteritems():
+    for start,links in connections.items():
         for end in links:
             G.add_edge(start, end)
     return G
 
 for i,(tag,links) in enumerate(data):
-    print i+1,tag
+    print(i+1,tag)
     graph = netx_graph(links)
     btc = nx.betweenness_centrality(graph)
     data[i].append(btc)

@@ -4,8 +4,8 @@ source = './../../../Network Properties/data/'
 filename = 'clc_RSF_n=100_k=2_ic=100.txt'
 outfile = './../../../Network Properties/probability/hist_'+filename[:-4]
 
-xlabel = ('Closeness Centrality', {'fontsize':18})
-ylabel = ('Probablility',{'fontsize':18}) # 
+xlabel = ('Closeness Centrality', dict(fontsize=18) )
+ylabel = ('Probablility', dict(fontsize=18) )
 title = ' '.join(filename[:-4].split('_'))
 
 output = 'png' #'show' 'eps' 'png'

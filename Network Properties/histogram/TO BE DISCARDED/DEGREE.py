@@ -4,8 +4,8 @@ source = './../../../Network Properties/data/'
 filename = 'RSF_n=100_k=2_ic=100.txt'
 outfile = './../../../Network Properties/probability/hist_deg_'+filename[:-4]
 
-xlabel = ('Degree', {'fontsize':18})
-ylabel = ('Probablility',{'fontsize':18}) # 
+xlabel = ('Degree', dict(fontsize=18) )
+ylabel = ('Probablility', dict(fontsize=18) )
 title = ' '.join(filename[:-4].split('_'))
 
 output = 'png' #'show' 'eps' 'png'

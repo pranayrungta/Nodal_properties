@@ -4,7 +4,7 @@
 
 int main()
 {
-    vector<int> nRange{100};
+    vector<int> nRange{20};
     vector<int> kRange{2};
 
 
